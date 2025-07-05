@@ -11,7 +11,7 @@ export class TaskEntity {
     description: string;
 
     @Column({ type: "enum", default: TaskStatusEnum.PENDING, nullable: false, enum: TaskStatusEnum })
-    completed: TaskStatusEnum;
+    status: TaskStatusEnum;
 
     // --{ RELATIONS }--
 
