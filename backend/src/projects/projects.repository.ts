@@ -10,13 +10,19 @@ export class ProjectsTypeOrmRepository {
         private readonly repository: Repository<ProjectEntity>
     ) { }
 
-    async findAll(): Promise<ProjectEntity[]> {
+    async findAll(): Promise<ProjectEntity[] | null> {
         return this.repository.find({
             relations: {
                 usersProjects: {
                     user: true
                 }
             }
+        });
+    }
+
+    async findById(id: number): Promise<ProjectEntity | null> {
+        return this.repository.findOne({
+            where: { id }
         });
     }
 }

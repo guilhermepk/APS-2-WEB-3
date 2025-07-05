@@ -22,4 +22,14 @@ export class ProjectsService {
             }));
         }, `Erro ao buscar todos os projetos`);
     }
+
+    async findById(id: number): Promise<ProjectEntity> {
+        return await tryCatch(async () => {
+            const foundProject = await this.repository.findById(id);
+
+            if (!foundProject) throw new NotFoundException(`Projeto ${id} não encontrado`);
+
+            return foundProject
+        }, `Erro ao buscar projeto ${id}`);
+    }
 }
