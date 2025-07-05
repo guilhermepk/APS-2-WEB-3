@@ -1,4 +1,4 @@
-import { UsersProjectsEntity } from "src/users-projetcs/models/entities/users-projetcs.entity";
+import { UserProjectEntity } from "src/users-projetcs/models/entities/user-project";
 import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'users' })
@@ -13,6 +13,6 @@ export class UserEntity {
 
     // --{ RELATIONS }--
 
-    @OneToMany(() => UsersProjectsEntity, userProject => userProject.user)
-    usersProjects: UsersProjectsEntity[];
+    @OneToMany(() => UserProjectEntity, userProject => userProject.user)
+    usersProjects: UserProjectEntity[];
 }
