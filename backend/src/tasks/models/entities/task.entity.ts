@@ -1,5 +1,5 @@
 import { ProjectEntity } from "src/projects/models/entities/project.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { TaskStatusEnum } from "../enums/task-status.enum";
 
 @Entity({ name: 'tasks' })
@@ -15,6 +15,7 @@ export class TaskEntity {
 
     // --{ RELATIONS }--
 
+    @JoinColumn({ name: 'fk_project' })
     @ManyToOne(() => ProjectEntity, project => project.tasks, { nullable: false })
     project: ProjectEntity;
 }
