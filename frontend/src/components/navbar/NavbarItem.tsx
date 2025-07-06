@@ -1,4 +1,4 @@
-import { NavbarItemType } from "@/models/types/navbar-item.type";
+import { NavbarItemType } from "@/common/models/types/navbar-item.type";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
