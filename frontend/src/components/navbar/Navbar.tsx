@@ -13,7 +13,7 @@ export default function Navbar() {
     return (
         <nav
             className={`
-                fixed
+                fixed top-0 left-0
                 w-[150px]
                 h-[100vh]
                 border-r border-white
