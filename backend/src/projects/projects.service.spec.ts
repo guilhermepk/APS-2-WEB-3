@@ -3,7 +3,6 @@ import { ProjectsTypeOrmRepository } from "./projects.repository";
 import { ProjectsService } from "./projects.service";
 import { ProjectEntity } from "./models/entities/project.entity";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";
-import { UserEntity } from "src/users/models/entities/user.entity";
 import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
 
 describe('ProjectsService', () => {
