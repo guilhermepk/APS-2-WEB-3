@@ -4,6 +4,8 @@ import { ProjectEntity } from "./models/entities/project.entity";
 import { tryCatch } from "src/common/functions/try-catch.function";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";
 import { UpdateProjectDto } from "./models/dtos/update-project.dto";
+import { UserEntity } from "src/users/models/entities/user.entity";
+import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
 
 @Injectable()
 export class ProjectsService {
@@ -21,7 +23,7 @@ export class ProjectsService {
         }, `Erro ao criar projeto`);
     }
 
-    async findAll(): Promise<ProjectEntity[]> {
+    async findAll(): Promise<FindAllProjectsResponseDto> {
         return await tryCatch(async () => {
             const foundProjects = await this.repository.findAll();
 

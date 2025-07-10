@@ -3,6 +3,7 @@ import { ProjectsService } from "./projects.service";
 import { ProjectEntity } from "./models/entities/project.entity";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";
 import { UpdateProjectDto } from "./models/dtos/update-project.dto";
+import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
 
 @Controller('projects')
 export class ProjectsController {
@@ -16,7 +17,7 @@ export class ProjectsController {
     }
 
     @Get()
-    async findAll(): Promise<ProjectEntity[]> {
+    async findAll(): Promise<FindAllProjectsResponseDto> {
         return await this.service.findAll();
     }
 
