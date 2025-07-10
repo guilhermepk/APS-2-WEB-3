@@ -4,6 +4,7 @@ import { ProjectsService } from "./projects.service";
 import { ProjectEntity } from "./models/entities/project.entity";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";
 import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
+import { InternalServerErrorException, NotFoundException } from "@nestjs/common";
 
 describe('ProjectsService', () => {
     let service: ProjectsService;
@@ -47,16 +48,16 @@ describe('ProjectsService', () => {
             expect(result).toEqual(projectEntity);
         });
 
-        it('deve lançar uma exceção HTTP 500 tratada quando o quando o repository falhar', async () => {
+        it('deveria lançar uma exceção HTTP 500 personalizada quando o repositório falhasse', async () => {
             const dto: CreateProjectDto = { name: 'Projeto teste', description: 'Descrição' };
             mockRepository.create.mockRejectedValue(new Error('DB error'));
 
-            await expect(service.create(dto)).rejects.toThrow('Erro ao criar projeto');
+            await expect(service.create(dto)).rejects.toThrow(new InternalServerErrorException('Erro ao criar projeto. DB error'));
         });
     });
 
     describe('find-all', () => {
-        it('deveria encontrar todos os projetos (2)', async () => {
+        it('deveria encontrar todos os projetos previstos', async () => {
             const projectsInDatabase: Array<{
                 id: number,
                 name: string,
@@ -100,6 +101,12 @@ describe('ProjectsService', () => {
 
             expect(mockRepository.findAll).toHaveBeenCalled();
             expect(result).toEqual(expectedResult);
+        });
+
+        it('deveria estourar uma exceção HTTP 404 personalizada', async () => {
+            mockRepository.findAll.mockResolvedValue([]);
+
+            await expect(service.findAll()).rejects.toThrow(new NotFoundException('Nenhum projeto encontrado'));
         });
     });
 });

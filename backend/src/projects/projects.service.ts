@@ -27,7 +27,7 @@ export class ProjectsService {
         return await tryCatch(async () => {
             const foundProjects = await this.repository.findAll();
 
-            if (!foundProjects) throw new NotFoundException(`Nenhum projeto encontrado`);
+            if (foundProjects?.length < 1) throw new NotFoundException(`Nenhum projeto encontrado`);
 
             return foundProjects.map(project => ({
                 ...project,
