@@ -1,7 +1,8 @@
-import { BadRequestException, Body, Controller, Get, Param, ParseIntPipe, Post } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
 import { ProjectsService } from "./projects.service";
 import { ProjectEntity } from "./models/entities/project.entity";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";
+import { UpdateProjectDto } from "./models/dtos/update-project.dto";
 
 @Controller('projects')
 export class ProjectsController {
@@ -29,5 +30,20 @@ export class ProjectsController {
         ) id: number
     ): Promise<ProjectEntity> {
         return await this.service.findById(id);
+    }
+
+    @Patch(':id')
+    async update(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() body: UpdateProjectDto
+    ) {
+        return await this.service.update(id, body);
+    }
+
+    @Delete(':id')
+    async delete(
+        @Param('id', ParseIntPipe) id: number
+    ) {
+        return await this.service.delete(id);
     }
 }

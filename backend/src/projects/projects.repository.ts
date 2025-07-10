@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
 import { ProjectEntity } from "./models/entities/project.entity";
 
 @Injectable()
@@ -28,5 +28,13 @@ export class ProjectsTypeOrmRepository {
         return this.repository.findOne({
             where: { id }
         });
+    }
+
+    async update(updatedProject: ProjectEntity): Promise<UpdateResult> {
+        return await this.repository.update(updatedProject.id, updatedProject);
+    }
+
+    async delete(project: ProjectEntity): Promise<DeleteResult> {
+        return await this.repository.delete({ id: project.id });
     }
 }
