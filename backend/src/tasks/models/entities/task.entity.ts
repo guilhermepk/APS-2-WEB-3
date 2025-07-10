@@ -1,6 +1,5 @@
 import { ProjectEntity } from "src/projects/models/entities/project.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { TaskStatusEnum } from "../enums/task-status.enum";
 
 @Entity({ name: 'tasks' })
 export class TaskEntity {
@@ -10,8 +9,8 @@ export class TaskEntity {
     @Column({ type: "varchar", nullable: false })
     description: string;
 
-    @Column({ type: "enum", default: TaskStatusEnum.PENDING, nullable: false, enum: TaskStatusEnum })
-    status: TaskStatusEnum;
+    @Column({ type: 'boolean' })
+    completed: boolean;
 
     // --{ RELATIONS }--
 

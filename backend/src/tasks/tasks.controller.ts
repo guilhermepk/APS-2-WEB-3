@@ -1,6 +1,5 @@
-import { BadRequestException, Controller, Get, ParseEnumPipe, Query } from "@nestjs/common";
+import { BadRequestException, Controller, Get, ParseBoolPipe, ParseEnumPipe, Query } from "@nestjs/common";
 import { TasksService } from "./tasks.service";
-import { TaskStatusEnum } from "./models/enums/task-status.enum";
 
 @Controller('tasks')
 export class TasksController {
@@ -11,12 +10,12 @@ export class TasksController {
     @Get()
     async findAll(
         @Query(
-            'status',
-            new ParseEnumPipe(TaskStatusEnum, {
-                exceptionFactory: () => new BadRequestException(`Status inválido. Vallores válidos: ${Object.values(TaskStatusEnum).map(v => `'${v}'`).join(', ')}`)
+            'completed',
+            new ParseBoolPipe({
+                exceptionFactory: () => new BadRequestException(`O parâmetro 'completed' deve ser um booleano`)
             })
-        ) status?: TaskStatusEnum
+        ) completed?: boolean
     ) {
-        return await this.service.findAll(status);
+        return await this.service.findAll(completed);
     }
 }
