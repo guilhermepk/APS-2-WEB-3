@@ -52,7 +52,13 @@ describe('ProjectsService', () => {
             const dto: CreateProjectDto = { name: 'Projeto teste', description: 'Descrição' };
             mockRepository.create.mockRejectedValue(new Error('DB error'));
 
-            await expect(service.create(dto)).rejects.toThrow(new InternalServerErrorException('Erro ao criar projeto. DB error'));
+            try {
+                await service.create(dto);
+                fail('Uma exceção HTTP 500 personalizada deveria ter sido estourada');
+            } catch (error) {
+                expect(error).toBeInstanceOf(InternalServerErrorException);
+                expect(error.message).toContain('Erro ao criar projeto. DB error');
+            }
         });
     });
 
@@ -107,6 +113,18 @@ describe('ProjectsService', () => {
             mockRepository.findAll.mockResolvedValue([]);
 
             await expect(service.findAll()).rejects.toThrow(new NotFoundException('Nenhum projeto encontrado'));
+        });
+
+        it('deveria estourar uma exceção HTTP 500 personalizada quando o repositório falhasse', async () => {
+            mockRepository.findAll.mockRejectedValue(new Error('DB error'));
+
+            try {
+                await service.findAll();
+                fail('Uma exceção HTTP 500 personalizada deveria ter sido estourada');
+            } catch (error) {
+                expect(error).toBeInstanceOf(InternalServerErrorException);
+                expect(error.message).toContain('Erro ao buscar todos os projetos. DB error');
+            }
         });
     });
 });
