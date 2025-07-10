@@ -10,6 +10,10 @@ export class ProjectsTypeOrmRepository {
         private readonly repository: Repository<ProjectEntity>
     ) { }
 
+    async create(project: ProjectEntity): Promise<ProjectEntity> {
+        return await this.repository.save(project);
+    }
+
     async findAll(): Promise<ProjectEntity[] | null> {
         return this.repository.find({
             relations: {

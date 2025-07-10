@@ -4,6 +4,11 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'projects' })
 export class ProjectEntity {
+    constructor(name: string, description: string) {
+        this.name = name;
+        this.description = description;
+    }
+
     static readonly NAME_MAX_LENGTH = 100;
 
     @PrimaryGeneratedColumn()

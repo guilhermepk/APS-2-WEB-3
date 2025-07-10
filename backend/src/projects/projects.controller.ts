@@ -1,12 +1,18 @@
-import { BadRequestException, Controller, Get, Param, ParseIntPipe } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, ParseIntPipe, Post } from "@nestjs/common";
 import { ProjectsService } from "./projects.service";
 import { ProjectEntity } from "./models/entities/project.entity";
+import { CreateProjectDto } from "./models/dtos/create-project.dto";
 
 @Controller('projects')
 export class ProjectsController {
     constructor(
         private readonly service: ProjectsService
     ) { }
+
+    @Post()
+    async create(@Body() body: CreateProjectDto) {
+        return await this.service.create(body);
+    }
 
     @Get()
     async findAll(): Promise<ProjectEntity[]> {

@@ -2,12 +2,23 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { ProjectsTypeOrmRepository } from "./projects.repository";
 import { ProjectEntity } from "./models/entities/project.entity";
 import { tryCatch } from "src/common/functions/try-catch.function";
+import { CreateProjectDto } from "./models/dtos/create-project.dto";
 
 @Injectable()
 export class ProjectsService {
     constructor(
         private readonly repository: ProjectsTypeOrmRepository
     ) { }
+
+    async create(data: CreateProjectDto): Promise<ProjectEntity> {
+        return await tryCatch(async () => {
+            const { name, description } = data;
+
+            const project = new ProjectEntity(name, description);
+
+            return await this.repository.create(project);
+        }, `Erro ao criar projeto`);
+    }
 
     async findAll(): Promise<ProjectEntity[]> {
         return await tryCatch(async () => {
