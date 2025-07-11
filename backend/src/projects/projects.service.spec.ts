@@ -12,7 +12,10 @@ describe('ProjectsService', () => {
 
     const mockRepository = {
         create: jest.fn(),
-        findAll: jest.fn()
+        findAll: jest.fn(),
+        findById: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn()
     }
 
     beforeEach(async () => {
@@ -62,7 +65,7 @@ describe('ProjectsService', () => {
         });
     });
 
-    describe('find-all', () => {
+    describe('findAll', () => {
         it('deveria encontrar todos os projetos previstos', async () => {
             const projectsInDatabase: Array<{
                 id: number,
@@ -122,8 +125,49 @@ describe('ProjectsService', () => {
                 await service.findAll();
                 fail('Uma exceção HTTP 500 personalizada deveria ter sido estourada');
             } catch (error) {
+                expect(mockRepository.findAll).toHaveBeenCalled();
+
                 expect(error).toBeInstanceOf(InternalServerErrorException);
                 expect(error.message).toContain('Erro ao buscar todos os projetos. DB error');
+            }
+        });
+    });
+
+    describe('findById', () => {
+        it('deveria encontrar um projeto', async () => {
+            const projectInDatabase = { id: 1, name: 'Projeto 1', description: 'Descrição 1' };
+
+            mockRepository.findById.mockResolvedValue(projectInDatabase);
+
+            const result = await service.findById(1);
+
+            expect(mockRepository.findById).toHaveBeenCalledWith(1);
+            expect(result).toEqual(projectInDatabase);
+        });
+
+        it('deveria estourar uma exceção HTTP 404 personalizada', async () => {
+            mockRepository.findById.mockResolvedValue(null);
+
+            try {
+                await service.findById(1);
+
+                fail('Uma exceção HTTP 404 personalizada deveria ter sido estourada');
+            } catch (error) {
+                expect(mockRepository.findById).toHaveBeenCalledWith(1);
+
+                expect(error).toBeInstanceOf(NotFoundException);
+                expect(error.message).toContain('Projeto 1 não encontrado');
+            }
+        });
+
+        it('deveria estourar uma exceção HTTP 500 personalizada', async () => {
+            mockRepository.findById.mockRejectedValue(new Error('DB error'));
+
+            try {
+                await service.findById(1);
+            } catch (error) {
+                expect(error).toBeInstanceOf(InternalServerErrorException);
+                expect(error.message).toContain('Erro ao buscar projeto 1. DB error');
             }
         });
     });
