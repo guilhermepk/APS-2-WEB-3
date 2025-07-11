@@ -4,7 +4,6 @@ import { ProjectEntity } from "./models/entities/project.entity";
 import { tryCatch } from "src/common/functions/try-catch.function";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";
 import { UpdateProjectDto } from "./models/dtos/update-project.dto";
-import { UserEntity } from "src/users/models/entities/user.entity";
 import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
 
 @Injectable()
