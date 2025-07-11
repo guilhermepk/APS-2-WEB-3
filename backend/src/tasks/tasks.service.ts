@@ -31,7 +31,7 @@ export class TasksService {
         return await tryCatch(async () => {
             const foundTasks = await this.repository.findAll(completed);
 
-            if (!foundTasks) throw new NotFoundException(`Nenhuma tarefa encontrada`);
+            if (foundTasks?.length < 1) throw new NotFoundException(`Nenhuma tarefa encontrada`);
 
             return foundTasks;
         }, `Erro ao buscar todas as tarefas`);
