@@ -56,7 +56,7 @@ export class ProjectsService {
             const result = await this.repository.update(Object.assign(foundProject, data));
 
             if (result.affected < 1) throw new UnprocessableEntityException(`Não foi possível realizar a atualização dos valores`);
-            if (result.affected > 1) throw new InternalServerErrorException(`Remoção afetou múltiplos registros (${result.affected}). Esperado: apenas 1.`);
+            if (result.affected > 1) throw new InternalServerErrorException(`Atualização afetou múltiplos registros (${result.affected} registros). Esperado: apenas 1.`);
 
             return { message: 'Projeto atualizado com sucesso!' };
         }, `Erro ao atualizar projeto ${id}`);
