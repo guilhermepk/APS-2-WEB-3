@@ -1,17 +1,19 @@
 interface TaskCardProps {
-    description: string;
-    completed: boolean;
+    task: {
+        description: string,
+        completed: boolean
+    }
 }
 
-export default function TaskCard({ description, completed }: TaskCardProps) {
+export default function TaskCard({ task }: TaskCardProps) {
     return (
         <div className="flex gap-2 items-center">
-            <img src={completed ? '/checkbox_signed.svg' : '/checkbox.svg'} alt="" />
-            <p className={`${completed ? 'opacity-25' : 'opacity-100'}`}>
-                {completed ? (
-                    <s> {description} </s>
+            <img src={task.completed ? '/checkbox_signed.svg' : '/checkbox.svg'} alt="" />
+            <p className={`${task.completed ? 'opacity-25' : 'opacity-100'}`}>
+                {task.completed ? (
+                    <s> {task.description} </s>
                 ) : (
-                    <> {description} </>
+                    <> {task.description} </>
                 )}
             </p>
         </div>

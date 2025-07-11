@@ -11,7 +11,7 @@ export default function Home() {
     `}>
       <h1 className="mt-[50px] mb-[100px]"> Projetos </h1>
 
-      <Suspense fallback={<p>Carregando...</p>}>
+      <Suspense fallback={<p> Carregando... </p>}>
         <ProjectsList projects={projects} />
       </Suspense>
     </div>

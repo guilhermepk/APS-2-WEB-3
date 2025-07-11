@@ -37,7 +37,7 @@ export default function ProjectPage() {
 
             <div className="flex itens-center justify-center flex-wrap gap-[25px]">
                 {project.tasks?.length > 0 ? project.tasks.map((task, index) => (
-                    <TaskCard key={index} description={task.description} completed={task.completed} />
+                    <TaskCard key={index} task={task} />
                 )) : (
                     <p className="text-center opacity-50"><i> Nenhuma tarefa </i></p>
                 )}
