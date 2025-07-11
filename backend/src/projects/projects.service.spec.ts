@@ -5,7 +5,7 @@ import { ProjectEntity } from "./models/entities/project.entity";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";
 import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
 import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
-import { UpdateResult } from "typeorm";
+import { DeleteResult, UpdateResult } from "typeorm";
 
 describe('ProjectsService', () => {
     let service: ProjectsService;
@@ -61,7 +61,7 @@ describe('ProjectsService', () => {
                 fail('Um InternalServerErrorException personalizado deveria ter sido estourado');
             } catch (error) {
                 expect(error).toBeInstanceOf(InternalServerErrorException);
-                expect(error.message).toContain('Erro ao criar projeto. DB error');
+                expect(error.message).toEqual('Erro ao criar projeto. DB error');
             }
         });
     });
@@ -129,7 +129,7 @@ describe('ProjectsService', () => {
                 expect(mockRepository.findAll).toHaveBeenCalled();
 
                 expect(error).toBeInstanceOf(InternalServerErrorException);
-                expect(error.message).toContain('Erro ao buscar todos os projetos. DB error');
+                expect(error.message).toEqual('Erro ao buscar todos os projetos. DB error');
             }
         });
     });
@@ -157,7 +157,7 @@ describe('ProjectsService', () => {
                 expect(mockRepository.findById).toHaveBeenCalledWith(1);
 
                 expect(error).toBeInstanceOf(NotFoundException);
-                expect(error.message).toContain('Projeto 1 não encontrado');
+                expect(error.message).toEqual('Projeto 1 não encontrado');
             }
         });
 
@@ -168,7 +168,7 @@ describe('ProjectsService', () => {
                 await service.findById(1);
             } catch (error) {
                 expect(error).toBeInstanceOf(InternalServerErrorException);
-                expect(error.message).toContain('Erro ao buscar projeto 1. DB error');
+                expect(error.message).toEqual('Erro ao buscar projeto 1. DB error');
             }
         });
     });
@@ -194,7 +194,7 @@ describe('ProjectsService', () => {
                 fail('Um BadRequestException ter sido estourado');
             } catch (error) {
                 expect(error).toBeInstanceOf(BadRequestException);
-                expect(error.message).toContain('Envie ao menos uma informação para ser atualizada');
+                expect(error.message).toEqual('Envie ao menos uma informação para ser atualizada');
             }
         });
 
@@ -211,7 +211,7 @@ describe('ProjectsService', () => {
                 fail('UnprocessableEntityException deveria ter sido estourado');
             } catch (error) {
                 expect(error).toBeInstanceOf(UnprocessableEntityException);
-                expect(error.message).toContain('Não foi possível realizar a atualização dos valores');
+                expect(error.message).toEqual('Não foi possível realizar a atualização dos valores');
             }
         });
 
@@ -225,10 +225,60 @@ describe('ProjectsService', () => {
 
             try {
                 await service.update(1, { name: 'Novo nome', description: 'Nova descrição' });
-                fail('UnprocessableEntityException deveria ter sido estourado');
+                fail('InternalServerErrorException deveria ter sido estourado');
             } catch (error) {
                 expect(error).toBeInstanceOf(InternalServerErrorException);
-                expect(error.message).toContain('Atualização afetou múltiplos registros (2 registros). Esperado: apenas 1.');
+                expect(error.message).toEqual('Atualização afetou múltiplos registros (2 registros). Esperado: apenas 1.');
+            }
+        });
+    });
+
+    describe('delete', () => {
+        it('deveria deletar um projeto da base de dados', async () => {
+            const projectInDatabase = { id: 1, name: 'TCC', description: 'Descrição 1' };
+            mockRepository.findById.mockResolvedValue(projectInDatabase);
+
+            const deleteResult = new DeleteResult();
+            deleteResult.affected = 1
+            mockRepository.delete.mockResolvedValue(deleteResult);
+
+            const result = await service.delete(1);
+
+            expect(mockRepository.delete).toHaveBeenCalledTimes(1);
+            expect(result).toEqual({ message: `Projeto TCC deletado com sucesso.` });
+        });
+
+        it('deveria estourar UnprocessableEntityException quando menos do que 1 entidade fosse afetada pelo delete', async () => {
+            const projectInDatabase = { id: 1, name: 'Projeto 1', description: 'Descrição 1' };
+            mockRepository.findById.mockResolvedValue(projectInDatabase);
+
+            const deleteResult = new DeleteResult();
+            deleteResult.affected = 0
+            mockRepository.delete.mockResolvedValue(deleteResult);
+
+            try {
+                await service.delete(1);
+                fail('UnprocessableEntityException deveria ter sido estourado');
+            } catch (error) {
+                expect(error).toBeInstanceOf(UnprocessableEntityException);
+                expect(error.message).toEqual('Não foi possível realizar a atualização dos valores');
+            }
+        });
+
+        it('deveria estourar InternalServerErrorException quando mais do que 1 entidade fosse afetada pelo delete', async () => {
+            const projectInDatabase = { id: 1, name: 'Projeto 1', description: 'Descrição 1' };
+            mockRepository.findById.mockResolvedValue(projectInDatabase);
+
+            const deleteResult = new DeleteResult();
+            deleteResult.affected = 2
+            mockRepository.delete.mockResolvedValue(deleteResult);
+
+            try {
+                await service.delete(1);
+                fail('InternalServerErrorException deveria ter sido estourado');
+            } catch (error) {
+                expect(error).toBeInstanceOf(InternalServerErrorException);
+                expect(error.message).toEqual('Remoção afetou múltiplos registros (2 registros). Esperado: apenas 1.');
             }
         });
     });
