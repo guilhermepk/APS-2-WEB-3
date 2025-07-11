@@ -4,10 +4,12 @@ import { TaskEntity } from "./models/entities/task.entity";
 import { TasksController } from "./tasks.controller";
 import { TasksTypeOrmRepository } from "./tasks.repository";
 import { TasksService } from "./tasks.service";
+import { ProjectsModule } from "src/projects/projects.module";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([TaskEntity]),
+        ProjectsModule
     ],
     controllers: [
         TasksController

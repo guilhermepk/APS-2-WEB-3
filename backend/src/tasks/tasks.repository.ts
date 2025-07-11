@@ -10,6 +10,10 @@ export class TasksTypeOrmRepository {
         private readonly repository: Repository<TaskEntity>
     ) { }
 
+    async create(task: TaskEntity): Promise<TaskEntity> {
+        return await this.repository.save(task);
+    }
+
     async findAll(completed?: boolean): Promise<TaskEntity[]> {
         return await this.repository.find({
             relations: {

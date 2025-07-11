@@ -3,13 +3,19 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 
 @Entity({ name: 'tasks' })
 export class TaskEntity {
+    constructor(description: string, project: ProjectEntity, completed?: boolean) {
+        this.description = description;
+        this.completed = completed;
+        this.project = project;
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ type: "varchar", nullable: false })
     description: string;
 
-    @Column({ type: 'boolean' })
+    @Column({ type: 'boolean', default: false })
     completed: boolean;
 
     // --{ RELATIONS }--

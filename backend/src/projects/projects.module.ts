@@ -16,5 +16,8 @@ import { ProjectsService } from "./projects.service";
         ProjectsTypeOrmRepository,
         ProjectsService
     ],
+    exports: [
+        ProjectsService
+    ]
 })
 export class ProjectsModule { }
