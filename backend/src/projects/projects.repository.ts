@@ -26,6 +26,12 @@ export class ProjectsTypeOrmRepository {
 
     async findById(id: number): Promise<ProjectEntity | null> {
         return this.repository.findOne({
+            relations: {
+                usersProjects: {
+                    user: true
+                },
+                tasks: true
+            },
             where: { id }
         });
     }

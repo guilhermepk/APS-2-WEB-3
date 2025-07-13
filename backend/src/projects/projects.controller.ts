@@ -4,6 +4,7 @@ import { ProjectEntity } from "./models/entities/project.entity";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";
 import { UpdateProjectDto } from "./models/dtos/update-project.dto";
 import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
+import { FindProjectByIdResponseDto } from "./models/dtos/find-project-by-id-response.dto";
 
 @Controller('projects')
 export class ProjectsController {
@@ -29,7 +30,7 @@ export class ProjectsController {
                 exceptionFactory: () => new BadRequestException(`O parâmetro 'id' deve ser um número inteiro positivo`)
             })
         ) id: number
-    ): Promise<ProjectEntity> {
+    ): Promise<FindProjectByIdResponseDto> {
         return await this.service.findById(id);
     }
 

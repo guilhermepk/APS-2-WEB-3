@@ -19,7 +19,7 @@ export class TasksService {
         return await tryCatch(async () => {
             const { description, projectId, completed } = data;
 
-            const foundProject: ProjectEntity = await this.projectsService.findById(projectId);
+            const foundProject: ProjectEntity = await this.projectsService.findById(projectId) as any;
 
             const task = new TaskEntity(description, foundProject, completed);
 
@@ -56,7 +56,7 @@ export class TasksService {
             const foundTask = await this.findById(id);
 
             const newData = { ...Object.assign(foundTask, data), projectId: undefined };
-            if (data.projectId) newData.project = await this.projectsService.findById(data.projectId);
+            if (data.projectId) newData.project = await this.projectsService.findById(data.projectId) as any;
 
             const result = await this.repository.update(newData);
 

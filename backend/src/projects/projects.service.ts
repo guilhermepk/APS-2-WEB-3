@@ -5,6 +5,7 @@ import { tryCatch } from "src/common/functions/try-catch.function";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";
 import { UpdateProjectDto } from "./models/dtos/update-project.dto";
 import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
+import { FindProjectByIdResponseDto } from "./models/dtos/find-project-by-id-response.dto";
 
 @Injectable()
 export class ProjectsService {
@@ -36,13 +37,17 @@ export class ProjectsService {
         }, `Erro ao buscar todos os projetos`);
     }
 
-    async findById(id: number): Promise<ProjectEntity> {
+    async findById(id: number): Promise<FindProjectByIdResponseDto> {
         return await tryCatch(async () => {
             const foundProject = await this.repository.findById(id);
 
             if (!foundProject) throw new NotFoundException(`Projeto ${id} não encontrado`);
 
-            return foundProject
+            return {
+                ...foundProject,
+                users: foundProject.usersProjects.map(userProject => userProject.user),
+                usersProjects: undefined
+            };
         }, `Erro ao buscar projeto ${id}`);
     }
 
@@ -52,7 +57,12 @@ export class ProjectsService {
 
             const foundProject = await this.findById(id);
 
-            const result = await this.repository.update(Object.assign(foundProject, data));
+            const updatedData = Object.assign(foundProject, data);
+
+            const newProject = new ProjectEntity(updatedData.name, updatedData.description);
+            newProject.id = foundProject.id;
+
+            const result = await this.repository.update(newProject);
 
             if (result.affected < 1) throw new UnprocessableEntityException(`Não foi possível realizar a atualização dos valores`);
             if (result.affected > 1) throw new InternalServerErrorException(`Atualização afetou múltiplos registros (${result.affected} registros). Esperado: apenas 1.`);
@@ -63,7 +73,7 @@ export class ProjectsService {
 
     async delete(id: number): Promise<{ message: string }> {
         return await tryCatch(async () => {
-            const foundProject = await this.findById(id);
+            const foundProject: ProjectEntity = await this.findById(id) as any;
 
             const result = await this.repository.delete(foundProject);
 
