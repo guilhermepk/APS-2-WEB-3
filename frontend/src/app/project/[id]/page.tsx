@@ -31,7 +31,15 @@ export default function ProjectPage() {
         <div>
             <h1 className="text-center my-[50px]"> {project.name} </h1>
 
-            <p className="text-center"> {project.description} </p>
+            <p className="text-center"> {project.description ?? <i className="opacity-50">Sem descrição</i>} </p>
+
+            <div className="mt-[50px] flex flex-row items-center justify-center gap-[25px] flex-wrap">
+                {project.users.map((user, index) => (
+                    <p key={index} className="rounded-[10px] border py-1 px-2 text-center flex items-center justify-center">
+                        {user.name}
+                    </p>
+                ))}
+            </div>
 
             <h2 className="text-center mt-[100px] mb-[50px]"> Tarefas deste projeto </h2>
 

@@ -15,7 +15,8 @@ export default async function findProjectById(id: number): Promise<FindProjectBy
                     { id: 2, completed: true, description: 'Apresentação 1' },
                     { id: 3, completed: false, description: 'Desenvolvimento' },
                     { id: 4, completed: false, description: 'Apresentação 2' }
-                ]
+                ],
+                users: [{ id: 1, name: 'Guilherme' }]
             }
         case 2:
             return {
@@ -26,14 +27,16 @@ export default async function findProjectById(id: number): Promise<FindProjectBy
                     { id: 5, completed: false, description: 'Comprar ingredientes' },
                     { id: 6, completed: false, description: 'Fazer' },
                     { id: 7, completed: false, description: 'Assar' }
-                ]
+                ],
+                users: [{ id: 1, name: 'Guilherme' }, { id: 2, name: 'Betina' }]
             }
         case 3:
             return {
                 "id": 3,
                 "name": "Lactobacilos Lokos parte 2",
                 "description": 'Jogar Mario Party e falar asneira.',
-                tasks: []
+                tasks: [],
+                users: [{ id: 1, name: 'Guilherme' }, { id: 3, name: 'Filipe' }, { id: 4, name: 'Leandro' }, { id: 5, name: 'Robert' }]
             }
         default:
             return null;

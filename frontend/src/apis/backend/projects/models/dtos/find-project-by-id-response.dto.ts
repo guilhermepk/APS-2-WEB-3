@@ -6,5 +6,9 @@ export type FindProjectByIdResponseDto = {
         id: number,
         description: string,
         completed: boolean,
+    }>,
+    users: Array<{
+        id: number,
+        name: string
     }>
 }
