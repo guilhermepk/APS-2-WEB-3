@@ -3,6 +3,10 @@ import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from
 
 @Entity({ name: 'users' })
 export class UserEntity {
+    constructor(name: string) {
+        this.name = name;
+    }
+
     static readonly NAME_MAX_LENGTH = 100;
 
     @PrimaryGeneratedColumn()

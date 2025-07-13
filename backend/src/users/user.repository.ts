@@ -10,6 +10,10 @@ export class UsersTypeOrmRepository {
         private readonly repository: Repository<UserEntity>
     ) { }
 
+    async create(user: UserEntity): Promise<UserEntity> {
+        return await this.repository.save(user);
+    }
+
     async findAll(): Promise<Array<UserEntity>> {
         return await this.repository.find();
     }
