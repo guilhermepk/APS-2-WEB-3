@@ -1,15 +1,49 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import * as cors from "cors";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = new Logger("Gerenciador de projetos");
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true
   }));
 
-  await app.listen(3000);
+  let currentRoute = null;
+  app.use((req, _, next) => {
+    currentRoute = req.path;
+    next();
+  });
+
+  app.use(cors({
+    origin: function (origin, callback) {
+      const whiteList = process.env.CORS_WHITELIST ? process.env.CORS_WHITELIST.split(', ') : [];
+      if (whiteList.includes(origin) || !origin) {
+        if (process.env.PRODUCTION === 'false') logger.debug(`Origem permitida através do CORS. Origem ${origin} na rota ${currentRoute}`);
+
+        callback(null, true)
+      } else {
+        logger.error(`Origem não permitida através do CORS. Origem ${origin} na rota ${currentRoute}`);
+      }
+    },
+    methods: [
+      "GET",
+      "POST",
+      "PATCH",
+      "DELETE"
+    ],
+    credentials: true,
+  }));
+
+  const port = process.env.PORT ?? 3000;
+
+  await app.listen(port);
+
+  logger.log(`Backend de ${process.env.PRODUCTION === 'true' ? 'produção' : 'desenvolvimento'} rodando na porta ${port}`);
 }
 bootstrap();
