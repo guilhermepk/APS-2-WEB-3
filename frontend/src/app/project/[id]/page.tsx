@@ -31,7 +31,7 @@ export default function ProjectPage() {
         <div>
             <h1 className="text-center my-[50px]"> {project.name} </h1>
 
-            <p className="text-center"> {project.description ?? <i className="opacity-50">Sem descrição</i>} </p>
+            <p className="text-center"> {project.description && project.description != "" ? project.description : <i className="opacity-50">Sem descrição</i>} </p>
 
             <div className="mt-[50px] flex flex-row items-center justify-center gap-[25px] flex-wrap">
                 {project.users.map((user, index) => (
