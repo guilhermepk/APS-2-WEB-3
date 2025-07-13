@@ -6,6 +6,7 @@ import { CreateTaskDto } from "./models/dtos/create-task.dto";
 import { ProjectsService } from "src/projects/projects.service";
 import { ProjectEntity } from "src/projects/models/entities/project.entity";
 import { UpdateTaskDto } from "./models/dtos/update-task.dto";
+import { FindAllTasksResponseDto } from "./models/dtos/find-all-tasks-response.dto";
 
 @Injectable()
 export class TasksService {
@@ -38,7 +39,7 @@ export class TasksService {
         }, `Erro ao buscar tarefa ${id}`);
     }
 
-    async findAll(completed?: boolean): Promise<TaskEntity[]> {
+    async findAll(completed?: boolean): Promise<FindAllTasksResponseDto> {
         return await tryCatch(async () => {
             const foundTasks = await this.repository.findAll(completed);
 

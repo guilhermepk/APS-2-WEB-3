@@ -2,6 +2,7 @@ import { BadRequestException, Body, Controller, Get, Param, ParseBoolPipe, Parse
 import { TasksService } from "./tasks.service";
 import { CreateTaskDto } from "./models/dtos/create-task.dto";
 import { UpdateTaskDto } from "./models/dtos/update-task.dto";
+import { FindAllTasksResponseDto } from "./models/dtos/find-all-tasks-response.dto";
 
 @Controller('tasks')
 export class TasksController {
@@ -32,7 +33,7 @@ export class TasksController {
                 exceptionFactory: () => new BadRequestException(`O parâmetro 'completed' deve ser um booleano`)
             })
         ) completed?: boolean
-    ) {
+    ): Promise<FindAllTasksResponseDto> {
         return await this.service.findAll(completed);
     }
 

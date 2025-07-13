@@ -24,6 +24,9 @@ export class TasksTypeOrmRepository {
                 project: true,
             },
             where: { completed },
+            order: {
+                completed: "ASC"
+            }
         });
     }
 
