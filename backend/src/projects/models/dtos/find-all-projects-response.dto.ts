@@ -1,4 +1,9 @@
-import { UserEntity } from "src/users/models/entities/user.entity";
-import { ProjectEntity } from "../entities/project.entity";
-
-export type FindAllProjectsResponseDto = Array<Omit<ProjectEntity, 'usersProjects' | 'tasks'> & { users: Array<Omit<UserEntity, 'usersProjects'>> }>;
+export type FindAllProjectsResponseDto = Array<{
+    id: number,
+    name: string,
+    description: string | null,
+    users: Array<{
+        id: number,
+        name: string
+    }>
+}>
