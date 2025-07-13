@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import findProjectById from "@/apis/backend/projects/find-project-by-id";
 import { FindProjectByIdResponseDto } from "@/apis/backend/projects/models/dtos/find-project-by-id-response.dto";
 import TaskCard from "@/components/TaskCard";
@@ -15,13 +15,17 @@ export default function ProjectPage() {
     const [loading, setLoading] = useState(true);
 
     const [isEditingTitle, setIsEditingTitle] = useState(false);
-    const [title, setTitle] = useState("");
+    const [name, setName] = useState("");
+
+    const [isEditingDescription, setIsEditingDescription] = useState(false);
+    const [description, setDescription] = useState("");
 
     useEffect(() => {
         if (!Number.isNaN(numberId)) {
             findProjectById(numberId).then((data) => {
                 setProject(data);
-                setTitle(data.name);
+                setName(data.name);
+                setDescription(data.description ?? "");
                 setLoading(false);
             });
         } else {
@@ -29,16 +33,35 @@ export default function ProjectPage() {
         }
     }, [numberId]);
 
-    async function handleTitleBlur() {
-        setIsEditingTitle(false);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-        await updateProject(numberId, {
-            name: title
-        });
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setDescription(e.target.value);
+        if (textareaRef.current) {
+            textareaRef.current.style.height = "auto"; // reset
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
     };
 
-    if (loading) return <p>Carregando...</p>;
+    useEffect(() => {
+        if (isEditingDescription && textareaRef.current) {
+            textareaRef.current.style.height = "auto";
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+    }, [isEditingDescription]);
 
+
+    async function handleTitleBlur() {
+        setIsEditingTitle(false);
+        await updateProject(numberId, { name });
+    }
+
+    async function handleDescriptionBlur() {
+        setIsEditingDescription(false);
+        await updateProject(numberId, { description });
+    }
+
+    if (loading) return <p>Carregando...</p>;
     if (!project) return <p>Projeto inválido</p>;
 
     return (
@@ -47,8 +70,8 @@ export default function ProjectPage() {
                 {isEditingTitle ? (
                     <input
                         className="text-3xl font-bold text-center border rounded px-2"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         onBlur={handleTitleBlur}
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {
@@ -59,8 +82,7 @@ export default function ProjectPage() {
                     />
                 ) : (
                     <>
-                        <h1 className="text-center font-bold">{title}</h1>
-
+                        <h1 className="text-center font-bold">{name}</h1>
                         <EditButton
                             className="absolute right-[-50px] top-1/2 -translate-y-1/2"
                             onClick={() => setIsEditingTitle(true)}
@@ -69,14 +91,38 @@ export default function ProjectPage() {
                 )}
             </div>
 
-
-            <p className="text-center">
-                {project.description && project.description != "" ? (
-                    project.description
+            <div className="relative text-center mb-[30px] w-full max-w-[600px]">
+                {isEditingDescription ? (
+                    <textarea
+                        ref={textareaRef}
+                        className="text-center border rounded px-2 py-2 w-full h-auto overflow-hidden resize-none"
+                        value={description}
+                        onChange={handleChange}
+                        onBlur={handleDescriptionBlur}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                                e.preventDefault();
+                                (e.target as HTMLTextAreaElement).blur();
+                            }
+                        }}
+                        autoFocus
+                    />
                 ) : (
-                    <i className="opacity-50">Sem descrição</i>
+                    <>
+                        <p className="text-center whitespace-pre-line break-words">
+                            {description.trim() !== "" ? (
+                                description
+                            ) : (
+                                <i className="opacity-50">Sem descrição</i>
+                            )}
+                        </p>
+                        <EditButton
+                            className="absolute right-[-50px] top-1/2 -translate-y-1/2"
+                            onClick={() => setIsEditingDescription(true)}
+                        />
+                    </>
                 )}
-            </p>
+            </div>
 
             <div className="mt-[50px] flex flex-row items-center justify-center gap-[25px] flex-wrap">
                 {project.users.map((user, index) => (
