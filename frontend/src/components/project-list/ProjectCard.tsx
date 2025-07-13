@@ -29,7 +29,7 @@ export default function ProjectCard({
                     <h2 className="text-center"> {project.name} </h2>
 
                     <p className="line-clamp-3 text-justify h-full">
-                        {project.description ?? <i className="opacity-50"> Sem descrição </i>}
+                        {project.description && project.description != "" ? project.description : <i className="opacity-50"> Sem descrição </i>}
                     </p>
 
                     <div className={`
