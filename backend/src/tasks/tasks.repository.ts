@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { TaskEntity } from "./models/entities/task.entity";
-import { Repository } from "typeorm";
+import { Repository, UpdateResult } from "typeorm";
 
 @Injectable()
 export class TasksTypeOrmRepository {
@@ -14,6 +14,10 @@ export class TasksTypeOrmRepository {
         return await this.repository.save(task);
     }
 
+    async findById(id: number): Promise<TaskEntity> {
+        return await this.repository.findOne({ where: { id } });
+    }
+
     async findAll(completed?: boolean): Promise<TaskEntity[]> {
         return await this.repository.find({
             relations: {
@@ -21,5 +25,9 @@ export class TasksTypeOrmRepository {
             },
             where: { completed },
         });
+    }
+
+    async update(newData: TaskEntity): Promise<UpdateResult> {
+        return await this.repository.update(newData.id, newData);
     }
 }
