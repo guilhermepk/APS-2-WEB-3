@@ -6,11 +6,11 @@ import { Suspense } from "react";
 export default function TasksPage() {
     const tasks = findAllTasks();
 
-    const options = [
-        { value: 'opcao1', label: 'Opção 1' },
-        { value: 'opcao2', label: 'Opção 2' },
-        { value: 'opcao3', label: 'Opção 3' },
-    ];
+    // const options = [
+    //     { value: 'opcao1', label: 'Opção 1' },
+    //     { value: 'opcao2', label: 'Opção 2' },
+    //     { value: 'opcao3', label: 'Opção 3' },
+    // ];
 
     return (
         <div
@@ -18,7 +18,7 @@ export default function TasksPage() {
         >
             <h1 className="my-[50px]"> Todas as tarefas </h1>
 
-            <CustomSelect
+            {/* <CustomSelect
                 options={[
                     { value: null, label: 'Visualizar todas' },
                     { value: true, label: 'Somente concluídas' },
@@ -26,7 +26,7 @@ export default function TasksPage() {
                 ]}
                 value="a"
                 onChange={() => { }}
-            />
+            /> */}
 
             <Suspense fallback={<p> Carregando... </p>}>
                 <TaskList tasks={tasks} />
