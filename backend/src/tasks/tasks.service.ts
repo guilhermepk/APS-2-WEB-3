@@ -38,7 +38,7 @@ export class TasksService {
         }, `Erro ao buscar tarefa ${id}`);
     }
 
-    async findAll(completed: boolean): Promise<TaskEntity[]> {
+    async findAll(completed?: boolean): Promise<TaskEntity[]> {
         return await tryCatch(async () => {
             const foundTasks = await this.repository.findAll(completed);
 

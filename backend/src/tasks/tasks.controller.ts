@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, ParseBoolPipe, ParseEnumPipe, ParseIntPipe, Patch, Post, Query } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query } from "@nestjs/common";
 import { TasksService } from "./tasks.service";
 import { CreateTaskDto } from "./models/dtos/create-task.dto";
 import { UpdateTaskDto } from "./models/dtos/update-task.dto";
@@ -28,6 +28,7 @@ export class TasksController {
         @Query(
             'completed',
             new ParseBoolPipe({
+                optional: true,
                 exceptionFactory: () => new BadRequestException(`O parâmetro 'completed' deve ser um booleano`)
             })
         ) completed?: boolean
