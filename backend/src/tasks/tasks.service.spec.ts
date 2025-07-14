@@ -3,13 +3,14 @@ import { TasksService } from "./tasks.service";
 import { TasksTypeOrmRepository } from "./tasks.repository";
 import { CreateTaskDto } from "./models/dtos/create-task.dto";
 import { ProjectsService } from "src/projects/projects.service";
-import { InternalServerErrorException } from "@nestjs/common";
+import { InternalServerErrorException, NotFoundException } from "@nestjs/common";
 
 describe('TasksService', () => {
     let service: TasksService;
 
     const mockRepository = {
-        create: jest.fn()
+        create: jest.fn(),
+        findById: jest.fn()
     }
 
     const projectService = {
@@ -55,6 +56,43 @@ describe('TasksService', () => {
             } catch (error) {
                 expect(error).toBeInstanceOf(InternalServerErrorException);
                 expect(error.message).toEqual('Erro ao criar tarefa. DB error');
+            }
+        });
+    });
+
+    describe('findById', () => {
+        it('deveria encontrar uma tarefa pelo ID', async () => {
+            const taskInDatabase = { id: 1, description: 'Tarefa 1', completed: false }
+
+            mockRepository.findById.mockResolvedValue(taskInDatabase);
+
+            const result = await service.findById(1);
+
+            expect(mockRepository.findById).toHaveBeenCalledTimes(1);
+            expect(result).toEqual(taskInDatabase);
+        });
+
+        it('deveria estourar NotFoundException', async () => {
+            mockRepository.findById.mockResolvedValue(null);
+
+            try {
+                await service.findById(1);
+                fail('Deveria ter estourado NotFoundException');
+            } catch (error) {
+                expect(error).toBeInstanceOf(NotFoundException);
+                expect(error.message).toEqual('Nenhuma tarefa encontrada com id 1');
+            }
+        });
+
+        it('deveria estourar um InternalServerErrorException personalizado quando o repositório falhasse', async () => {
+            mockRepository.findById.mockRejectedValue(new Error('DB error'));
+
+            try {
+                await service.findById(1);
+                fail('Um InternalServerErrorException personalizado deveria ter estourado');
+            } catch (error) {
+                expect(error).toBeInstanceOf(InternalServerErrorException);
+                expect(error.message).toEqual('Erro ao buscar tarefa 1. DB error');
             }
         });
     });
