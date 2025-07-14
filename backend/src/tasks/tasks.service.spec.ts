@@ -3,6 +3,7 @@ import { TasksService } from "./tasks.service";
 import { TasksTypeOrmRepository } from "./tasks.repository";
 import { CreateTaskDto } from "./models/dtos/create-task.dto";
 import { ProjectsService } from "src/projects/projects.service";
+import { InternalServerErrorException } from "@nestjs/common";
 
 describe('TasksService', () => {
     let service: TasksService;
@@ -40,7 +41,21 @@ describe('TasksService', () => {
             const result = await service.create(dto);
 
             expect(mockRepository.create).toHaveBeenCalledTimes(1);
-            expect(result.message).toEqual('Tarefa criada com sucesso!');
+            expect(result).toEqual(taskInDatabase);
+        });
+
+        it('deveria estourar um InternalServerErrorException personalizado quando o repositório falhasse', async () => {
+            mockRepository.create.mockRejectedValue(new Error('DB error'));
+
+            const dto: CreateTaskDto = { description: 'Tarefa 1', completed: false, projectId: 1 }
+
+            try {
+                await service.create(dto);
+                fail('Um InternalServerErrorException personalizado deveria ter estourado');
+            } catch (error) {
+                expect(error).toBeInstanceOf(InternalServerErrorException);
+                expect(error.message).toEqual('Erro ao criar tarefa. DB error');
+            }
         });
     });
 });

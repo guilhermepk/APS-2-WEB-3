@@ -15,7 +15,7 @@ export class TasksService {
         private readonly projectsService: ProjectsService
     ) { }
 
-    async create(data: CreateTaskDto): Promise<{ message: 'Tarefa criada com sucesso!' }> {
+    async create(data: CreateTaskDto): Promise<TaskEntity> {
         return await tryCatch(async () => {
             const { description, projectId, completed } = data;
 
@@ -23,9 +23,7 @@ export class TasksService {
 
             const task = new TaskEntity(description, foundProject, completed);
 
-            await this.repository.create(task);
-
-            return { message: 'Tarefa criada com sucesso!' };
+            return await this.repository.create(task);
         }, `Erro ao criar tarefa`);
     }
 
