@@ -42,6 +42,7 @@ describe('TasksService', () => {
             const taskInDatabase = { id: 1, description: 'Tarefa 1', completed: false }
 
             mockRepository.create.mockResolvedValue(taskInDatabase);
+            projectService.findById.mockResolvedValue({ id: 1, name: 'Projeto 1', description: null });
 
             const result = await service.create(dto);
 
@@ -49,7 +50,24 @@ describe('TasksService', () => {
             expect(result).toEqual(taskInDatabase);
         });
 
+        it('deveria estourar NotFoundException pro ID do projeto', async () => {
+            const dto: CreateTaskDto = { description: 'Tarefa 1', completed: false, projectId: 1 }
+
+            const taskInDatabase = { id: 1, description: 'Tarefa 1', completed: false }
+
+            mockRepository.create.mockResolvedValue(taskInDatabase);
+            projectService.findById.mockRejectedValue(new NotFoundException());
+
+            try {
+                await service.create(dto);
+                fail('Deveria ter estourado NotFoundException');
+            } catch (error) {
+                expect(error).toBeInstanceOf(NotFoundException);
+            }
+        });
+
         it('deveria estourar um InternalServerErrorException personalizado quando o repositório falhasse', async () => {
+            projectService.findById.mockResolvedValue({ id: 1, name: 'Projeto 1', description: null });
             mockRepository.create.mockRejectedValue(new Error('DB error'));
 
             const dto: CreateTaskDto = { description: 'Tarefa 1', completed: false, projectId: 1 }
