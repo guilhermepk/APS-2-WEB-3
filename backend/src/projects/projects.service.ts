@@ -7,23 +7,33 @@ import { UpdateProjectDto } from "./models/dtos/update-project.dto";
 import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
 import { FindProjectByIdResponseDto } from "./models/dtos/find-project-by-id-response.dto";
 import { UsersService } from "src/users/users.service";
+import { UsersProjectsService } from "src/users-projetcs/users-projects.service";
+import { EntityManager } from "typeorm";
 
 @Injectable()
 export class ProjectsService {
     constructor(
         private readonly repository: ProjectsTypeOrmRepository,
-        private readonly usersService: UsersService
+        private readonly usersService: UsersService,
+        private readonly usersProjectsService: UsersProjectsService,
+        private readonly entityManager: EntityManager
     ) { }
 
     async create(data: CreateProjectDto): Promise<ProjectEntity> {
         return await tryCatch(async () => {
-            const { name, description, userIds } = data;
+            return await this.entityManager.transaction(async (transactionManager) => {
+                const { name, description, userIds } = data;
 
-            const project = new ProjectEntity(name, description);
+                const project = new ProjectEntity(name, description);
+                const savedProject = await this.repository.create(project, transactionManager);
 
-            const savedProject = await this.repository.create(project);
+                await Promise.all(userIds.map(async (userId) => {
+                    const user = await this.usersService.findById(userId);
+                    await this.usersProjectsService.create(user, savedProject, transactionManager);
+                }));
 
-            return savedProject;
+                return savedProject;
+            });
         }, `Erro ao criar projeto`);
     }
 

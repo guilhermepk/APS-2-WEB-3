@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserProjectEntity } from "./models/entities/user-project";
-import { Repository } from "typeorm";
+import { EntityManager, Repository } from "typeorm";
 
 @Injectable()
 export class UsersProjectsTypeOrmRepository {
@@ -10,7 +10,8 @@ export class UsersProjectsTypeOrmRepository {
         private readonly repository: Repository<UserProjectEntity>
     ) { }
 
-    async create(userProject: UserProjectEntity): Promise<UserProjectEntity> {
-        return await this.repository.save(userProject);
+    async create(userProject: UserProjectEntity, entityManager?: EntityManager): Promise<UserProjectEntity> {
+        if (entityManager) return entityManager.save(userProject);
+        else return await this.repository.save(userProject);
     }
 }

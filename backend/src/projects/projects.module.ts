@@ -5,11 +5,13 @@ import { ProjectsController } from "./projects.controller";
 import { ProjectsTypeOrmRepository } from "./projects.repository";
 import { ProjectsService } from "./projects.service";
 import { UsersModule } from "src/users/users.module";
+import { UsersProjectsModule } from "src/users-projetcs/users-projects.module";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([ProjectEntity]),
-        UsersModule
+        UsersModule,
+        UsersProjectsModule
     ],
     controllers: [
         ProjectsController

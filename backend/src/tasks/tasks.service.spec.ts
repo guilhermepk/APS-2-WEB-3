@@ -5,7 +5,6 @@ import { CreateTaskDto } from "./models/dtos/create-task.dto";
 import { ProjectsService } from "src/projects/projects.service";
 import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 import { UpdateTaskDto } from "./models/dtos/update-task.dto";
-import { UpdateResult } from "typeorm";
 
 describe('TasksService', () => {
     let service: TasksService;

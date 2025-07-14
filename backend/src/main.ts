@@ -15,8 +15,10 @@ async function bootstrap() {
   }));
 
   let currentRoute = null;
+  let currentRequest = null;
   app.use((req, _, next) => {
     currentRoute = req.path;
+    currentRequest = req;
     next();
   });
 
@@ -29,6 +31,7 @@ async function bootstrap() {
         callback(null, true)
       } else {
         logger.error(`Origem não permitida através do CORS. Origem ${origin} na rota ${currentRoute}`);
+        console.log('request', currentRequest)
       }
     },
     methods: [

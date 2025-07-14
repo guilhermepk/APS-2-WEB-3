@@ -1,4 +1,5 @@
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
+import { ArrayMinSize, IsArray, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, MaxLength } from "class-validator";
+import { IsID } from "src/common/custom-validators/is-id.validator";
 
 export class CreateProjectDto {
     @IsNotEmpty({ message: `'name' não pode estar vazio` })
@@ -10,8 +11,9 @@ export class CreateProjectDto {
     @IsString({ message: `'description' deve ser uma string` })
     description?: string;
 
-    @IsOptional()
+    @IsNotEmpty()
     @IsArray()
-    @IsNumber(undefined, { each: true })
-    userIds?: number[];
+    @ArrayMinSize(1)
+    @IsID()
+    userIds: number[];
 }
