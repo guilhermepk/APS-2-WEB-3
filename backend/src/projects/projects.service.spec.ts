@@ -6,6 +6,7 @@ import { CreateProjectDto } from "./models/dtos/create-project.dto";
 import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
 import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 import { DeleteResult, UpdateResult } from "typeorm";
+import { UsersService } from "src/users/users.service";
 
 describe('ProjectsService', () => {
     let service: ProjectsService;
@@ -18,11 +19,16 @@ describe('ProjectsService', () => {
         delete: jest.fn()
     }
 
+    const userService = {
+        findById: jest.fn()
+    }
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 ProjectsService,
-                { provide: ProjectsTypeOrmRepository, useValue: mockRepository }
+                { provide: ProjectsTypeOrmRepository, useValue: mockRepository },
+                { provide: UsersService, useValue: UsersService }
             ]
         }).compile();
 
@@ -293,7 +299,19 @@ describe('ProjectsService', () => {
 
     describe('delete', () => {
         it('deveria deletar um projeto da base de dados', async () => {
-            const projectInDatabase = { id: 1, name: 'TCC', description: 'Descrição 1' };
+            const projectInDatabase = {
+                id: 1,
+                name: 'TCC',
+                description: 'Descrição 1',
+                usersProjects: [
+                    { id: 1, user: { id: 1, name: 'Usuário 1' } },
+                    { id: 2, user: { id: 2, name: 'Usuário 2' } }
+                ],
+                tasks: [
+                    { id: 1, descriptions: 'Tarefa 1', completed: true },
+                    { id: 2, descriptions: 'Tarefa 2', completed: false }
+                ]
+            };
             mockRepository.findById.mockResolvedValue(projectInDatabase);
 
             const deleteResult = new DeleteResult();
@@ -307,7 +325,19 @@ describe('ProjectsService', () => {
         });
 
         it('deveria estourar UnprocessableEntityException quando menos do que 1 entidade fosse afetada pelo delete', async () => {
-            const projectInDatabase = { id: 1, name: 'Projeto 1', description: 'Descrição 1' };
+            const projectInDatabase = {
+                id: 1,
+                name: 'Projeto 1',
+                description: 'Descrição 1',
+                usersProjects: [
+                    { id: 1, user: { id: 1, name: 'Usuário 1' } },
+                    { id: 2, user: { id: 2, name: 'Usuário 2' } }
+                ],
+                tasks: [
+                    { id: 1, descriptions: 'Tarefa 1', completed: true },
+                    { id: 2, descriptions: 'Tarefa 2', completed: false }
+                ]
+            };
             mockRepository.findById.mockResolvedValue(projectInDatabase);
 
             const deleteResult = new DeleteResult();
@@ -319,12 +349,24 @@ describe('ProjectsService', () => {
                 fail('UnprocessableEntityException deveria ter sido estourado');
             } catch (error) {
                 expect(error).toBeInstanceOf(UnprocessableEntityException);
-                expect(error.message).toEqual('Não foi possível realizar a atualização dos valores');
+                expect(error.message).toEqual('Não foi possível remover o projeto Projeto 1');
             }
         });
 
         it('deveria estourar InternalServerErrorException quando mais do que 1 entidade fosse afetada pelo delete', async () => {
-            const projectInDatabase = { id: 1, name: 'Projeto 1', description: 'Descrição 1' };
+            const projectInDatabase = {
+                id: 1,
+                name: 'Projeto 1',
+                description: 'Descrição 1',
+                usersProjects: [
+                    { id: 1, user: { id: 1, name: 'Usuário 1' } },
+                    { id: 2, user: { id: 2, name: 'Usuário 2' } }
+                ],
+                tasks: [
+                    { id: 1, descriptions: 'Tarefa 1', completed: true },
+                    { id: 2, descriptions: 'Tarefa 2', completed: false }
+                ]
+            };
             mockRepository.findById.mockResolvedValue(projectInDatabase);
 
             const deleteResult = new DeleteResult();

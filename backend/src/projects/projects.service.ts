@@ -82,7 +82,7 @@ export class ProjectsService {
             const result = await this.repository.delete(foundProject);
 
             if (result.affected < 1) throw new UnprocessableEntityException(`Não foi possível remover o projeto ${foundProject.name}`);
-            if (result.affected > 1) throw new InternalServerErrorException(`Remoção afetou múltiplos registros (${result.affected}). Esperado: apenas 1.`);
+            if (result.affected > 1) throw new InternalServerErrorException(`Remoção afetou múltiplos registros (${result.affected} registros). Esperado: apenas 1.`);
 
             return { message: `Projeto ${foundProject.name} deletado com sucesso.` };
         }, `Erro ao deletar projeto ${id}`);
