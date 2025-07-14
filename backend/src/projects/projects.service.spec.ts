@@ -233,7 +233,19 @@ describe('ProjectsService', () => {
         });
 
         it('deveria estourar UnprocessableEntityException quando menos de 1 entidade fosse afetada pelo update', async () => {
-            const projectInDatabase = { id: 1, name: 'Projeto 1', description: 'Descrição 1' };
+            const projectInDatabase = {
+                id: 1,
+                name: 'Projeto 1',
+                description: 'Descrição 1',
+                usersProjects: [
+                    { id: 1, user: { id: 1, name: 'Usuário 1' } },
+                    { id: 2, user: { id: 2, name: 'Usuário 2' } }
+                ],
+                tasks: [
+                    { id: 1, descriptions: 'Tarefa 1', completed: true },
+                    { id: 2, descriptions: 'Tarefa 2', completed: false }
+                ]
+            };
             mockRepository.findById.mockResolvedValue(projectInDatabase);
 
             const updateResult = new UpdateResult();
@@ -250,7 +262,19 @@ describe('ProjectsService', () => {
         });
 
         it('deveria estourar InternalServerErrorException quando mais do que 1 entidade fosse afetada pelo update', async () => {
-            const projectInDatabase = { id: 1, name: 'Projeto 1', description: 'Descrição 1' };
+            const projectInDatabase = {
+                id: 1,
+                name: 'Projeto 1',
+                description: 'Descrição 1',
+                usersProjects: [
+                    { id: 1, user: { id: 1, name: 'Usuário 1' } },
+                    { id: 2, user: { id: 2, name: 'Usuário 2' } }
+                ],
+                tasks: [
+                    { id: 1, descriptions: 'Tarefa 1', completed: true },
+                    { id: 2, descriptions: 'Tarefa 2', completed: false }
+                ]
+            };
             mockRepository.findById.mockResolvedValue(projectInDatabase);
 
             const updateResult = new UpdateResult();
