@@ -9,7 +9,6 @@ import { DeleteResult, UpdateResult } from "typeorm";
 
 describe('ProjectsService', () => {
     let service: ProjectsService;
-    let repository: ProjectsTypeOrmRepository;
 
     const mockRepository = {
         create: jest.fn(),
@@ -28,7 +27,6 @@ describe('ProjectsService', () => {
         }).compile();
 
         service = module.get<ProjectsService>(ProjectsService);
-        repository = module.get<ProjectsTypeOrmRepository>(ProjectsTypeOrmRepository);
 
         jest.clearAllMocks();
     });
@@ -136,14 +134,38 @@ describe('ProjectsService', () => {
 
     describe('findById', () => {
         it('deveria encontrar um projeto', async () => {
-            const projectInDatabase = { id: 1, name: 'Projeto 1', description: 'Descrição 1' };
+            const projectInDatabase = {
+                id: 1,
+                name: 'Projeto 1',
+                description: 'Descrição 1',
+                usersProjects: [
+                    { id: 1, user: { id: 1, name: 'Usuário 1' } },
+                    { id: 2, user: { id: 2, name: 'Usuário 2' } }
+                ],
+                tasks: [
+                    { id: 1, descriptions: 'Tarefa 1', completed: true },
+                    { id: 2, descriptions: 'Tarefa 2', completed: false }
+                ]
+            };
 
             mockRepository.findById.mockResolvedValue(projectInDatabase);
 
             const result = await service.findById(1);
 
             expect(mockRepository.findById).toHaveBeenCalledWith(1);
-            expect(result).toEqual(projectInDatabase);
+            expect(result).toEqual({
+                id: 1,
+                name: 'Projeto 1',
+                description: 'Descrição 1',
+                users: [
+                    { id: 1, name: 'Usuário 1' },
+                    { id: 2, name: 'Usuário 2' }
+                ],
+                tasks: [
+                    { id: 1, descriptions: 'Tarefa 1', completed: true },
+                    { id: 2, descriptions: 'Tarefa 2', completed: false }
+                ]
+            });
         });
 
         it('deveria estourar NotFoundException', async () => {
