@@ -47,7 +47,7 @@ export class TasksService {
         }, `Erro ao buscar todas as tarefas`);
     }
 
-    async update(id: number, data: UpdateTaskDto): Promise<{ message: 'Tarefa atualizado com sucesso' }> {
+    async update(id: number, data: UpdateTaskDto): Promise<{ message: 'Tarefa atualizada com sucesso' }> {
         return await tryCatch(async () => {
             if (Object.values(data).length < 1) throw new BadRequestException(`Envie ao menos uma informação para ser atualizada`);
 
@@ -61,7 +61,7 @@ export class TasksService {
             if (result.affected < 1) throw new UnprocessableEntityException(`Não foi possível atualizar a tarefa`);
             if (result.affected > 1) throw new InternalServerErrorException(`Múltiplos registros afetados (${result.affected} registros). Esperado: apenas 1.`);
 
-            return { message: 'Tarefa atualizado com sucesso' };
+            return { message: 'Tarefa atualizada com sucesso' };
         }, `Erro ao atualizar tarefa ${id}`);
     }
 }

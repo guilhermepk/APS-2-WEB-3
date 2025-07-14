@@ -3,8 +3,9 @@ import { TasksService } from "./tasks.service";
 import { TasksTypeOrmRepository } from "./tasks.repository";
 import { CreateTaskDto } from "./models/dtos/create-task.dto";
 import { ProjectsService } from "src/projects/projects.service";
-import { InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { TaskEntity } from "./models/entities/task.entity";
+import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
+import { UpdateTaskDto } from "./models/dtos/update-task.dto";
+import { UpdateResult } from "typeorm";
 
 describe('TasksService', () => {
     let service: TasksService;
@@ -12,7 +13,8 @@ describe('TasksService', () => {
     const mockRepository = {
         create: jest.fn(),
         findById: jest.fn(),
-        findAll: jest.fn()
+        findAll: jest.fn(),
+        update: jest.fn()
     }
 
     const projectService = {
@@ -136,6 +138,100 @@ describe('TasksService', () => {
             } catch (error) {
                 expect(error).toBeInstanceOf(InternalServerErrorException);
                 expect(error.message).toEqual('Erro ao buscar todas as tarefas. DB error');
+            }
+        });
+    });
+
+    describe('update', () => {
+        it('deveria atualizar as informações com sucesso', async () => {
+            const dto: UpdateTaskDto = { completed: true, description: 'Nova descrição', projectId: 2 }
+
+            const taskInDatabase = { id: 1, description: 'Tarefa 1', completed: false }
+
+            mockRepository.findById.mockResolvedValue(taskInDatabase);
+            projectService.findById.mockResolvedValue({ id: 2, name: 'Projeto 2', description: null });
+            mockRepository.update.mockResolvedValue({ affected: 1 });
+
+            const result = await service.update(1, dto);
+
+            expect(mockRepository.findById).toHaveBeenCalledTimes(1);
+            expect(projectService.findById).toHaveBeenCalledTimes(1);
+            expect(result.message).toEqual('Tarefa atualizada com sucesso');
+        });
+
+        it('deveria estourar BadRequestException para um DTO vazio', async () => {
+            try {
+                await service.update(1, {});
+                fail('Deveria ter estourado BadRequestException');
+            } catch (error) {
+                expect(error).toBeInstanceOf(BadRequestException);
+                expect(error.message).toEqual('Envie ao menos uma informação para ser atualizada');
+            }
+        });
+
+        it('deveria estourar NotFoundException para o ID da task', async () => {
+            const dto: UpdateTaskDto = { completed: true, description: 'Nova descrição', projectId: 2 }
+
+            mockRepository.findById.mockResolvedValue(null);
+
+            try {
+                await service.update(1, dto);
+                fail('Deveria ter estourado NotFoundException');
+            } catch (error) {
+                expect(error).toBeInstanceOf(NotFoundException);
+                expect(error.message).toEqual('Nenhuma tarefa encontrada com id 1');
+            }
+        });
+
+        it('deveria estourar NotFoundException para o ID do novo projeto', async () => {
+            const dto: UpdateTaskDto = { completed: true, description: 'Nova descrição', projectId: 2 }
+
+            const taskInDatabase = { id: 1, description: 'Tarefa 1', completed: false }
+
+            mockRepository.findById.mockResolvedValue(taskInDatabase);
+            projectService.findById.mockRejectedValue(new NotFoundException());
+
+            try {
+                await service.update(1, dto);
+                fail('Deveria ter estourado NotFoundException');
+            } catch (error) {
+                expect(error).toBeInstanceOf(NotFoundException);
+            }
+        });
+
+        it('deveria estourar UnprocessableEntityException quando menos do que 1 registro fosse afetado pelo update', async () => {
+            const dto: UpdateTaskDto = { completed: true, description: 'Nova descrição', projectId: 2 }
+
+            const taskInDatabase = { id: 1, description: 'Tarefa 1', completed: false }
+
+            mockRepository.findById.mockResolvedValue(taskInDatabase);
+            projectService.findById.mockResolvedValue({ id: 2, name: 'Projeto 2', description: null });
+            mockRepository.update.mockResolvedValue({ affected: 0 });
+
+            try {
+                await service.update(1, dto);
+                fail('Deveria ter estourado UnprocessableEntityException');
+            } catch (error) {
+                expect(error).toBeInstanceOf(UnprocessableEntityException);
+                expect(error.message).toEqual('Não foi possível atualizar a tarefa');
+            }
+        });
+
+        it('deveria estourar um InternalServerError personalizado quando múltiplos registros fossem afetados pelo update', async () => {
+            const dto: UpdateTaskDto = { completed: true, description: 'Nova descrição', projectId: 2 }
+
+            const taskInDatabase = { id: 1, description: 'Tarefa 1', completed: false }
+
+            mockRepository.findById.mockResolvedValue(taskInDatabase);
+            projectService.findById.mockResolvedValue({ id: 2, name: 'Projeto 2', description: null });
+            mockRepository.update.mockResolvedValue({ affected: 2 });
+
+            try {
+                await service.update(1, dto);
+                fail('Um InternalServerErrorPersonalizado deveria ter estourado');
+            } catch (error) {
+                expect(error).toBeInstanceOf(InternalServerErrorException);
+                expect(error.message).toEqual('Múltiplos registros afetados (2 registros). Esperado: apenas 1.');
             }
         });
     });
