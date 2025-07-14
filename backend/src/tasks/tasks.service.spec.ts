@@ -4,13 +4,15 @@ import { TasksTypeOrmRepository } from "./tasks.repository";
 import { CreateTaskDto } from "./models/dtos/create-task.dto";
 import { ProjectsService } from "src/projects/projects.service";
 import { InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { TaskEntity } from "./models/entities/task.entity";
 
 describe('TasksService', () => {
     let service: TasksService;
 
     const mockRepository = {
         create: jest.fn(),
-        findById: jest.fn()
+        findById: jest.fn(),
+        findAll: jest.fn()
     }
 
     const projectService = {
@@ -93,6 +95,47 @@ describe('TasksService', () => {
             } catch (error) {
                 expect(error).toBeInstanceOf(InternalServerErrorException);
                 expect(error.message).toEqual('Erro ao buscar tarefa 1. DB error');
+            }
+        });
+    });
+
+    describe('findAll', () => {
+        it('deveria encontrar todas as tarefas', async () => {
+            const tasksInDatabase = [
+                { id: 1, description: 'Tarefa 1', completed: true },
+                { id: 2, description: 'Tarefa 2', completed: true },
+                { id: 3, description: 'Tarefa 3', completed: true },
+            ];
+
+            mockRepository.findAll.mockResolvedValue(tasksInDatabase);
+
+            const result = await service.findAll();
+
+            expect(mockRepository.findAll).toHaveBeenCalledTimes(1);
+            expect(result).toEqual(tasksInDatabase);
+        });
+
+        it('deveria estourar NotFoundException', async () => {
+            mockRepository.findAll.mockResolvedValue([]);
+
+            try {
+                await service.findAll();
+                fail('Deveria ter estourado NotFoundException');
+            } catch (error) {
+                expect(error).toBeInstanceOf(NotFoundException);
+                expect(error.message).toEqual('Nenhuma tarefa encontrada');
+            }
+        });
+
+        it('deveria estourar um InternalServerErrorException personalizado quando o repositório falhasse', async () => {
+            mockRepository.findAll.mockRejectedValue(new Error('DB error'));
+
+            try {
+                await service.findAll();
+                fail('Um InternalServerErrorException personalizado deveria ter estourado');
+            } catch (error) {
+                expect(error).toBeInstanceOf(InternalServerErrorException);
+                expect(error.message).toEqual('Erro ao buscar todas as tarefas. DB error');
             }
         });
     });
