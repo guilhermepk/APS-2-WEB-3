@@ -14,6 +14,10 @@ export class UsersTypeOrmRepository {
         return await this.repository.save(user);
     }
 
+    async findById(id: number): Promise<UserEntity> {
+        return await this.repository.findOne({ where: { id } });
+    }
+
     async findAll(): Promise<Array<UserEntity>> {
         return await this.repository.find();
     }

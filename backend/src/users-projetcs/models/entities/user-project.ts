@@ -4,6 +4,11 @@ import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'users-projects' })
 export class UserProjectEntity {
+    constructor(user: UserEntity, project: ProjectEntity) {
+        this.user = user;
+        this.project = project;
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 

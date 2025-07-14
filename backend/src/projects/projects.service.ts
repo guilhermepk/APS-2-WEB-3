@@ -6,20 +6,24 @@ import { CreateProjectDto } from "./models/dtos/create-project.dto";
 import { UpdateProjectDto } from "./models/dtos/update-project.dto";
 import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
 import { FindProjectByIdResponseDto } from "./models/dtos/find-project-by-id-response.dto";
+import { UsersService } from "src/users/users.service";
 
 @Injectable()
 export class ProjectsService {
     constructor(
-        private readonly repository: ProjectsTypeOrmRepository
+        private readonly repository: ProjectsTypeOrmRepository,
+        private readonly usersService: UsersService
     ) { }
 
     async create(data: CreateProjectDto): Promise<ProjectEntity> {
         return await tryCatch(async () => {
-            const { name, description } = data;
+            const { name, description, userIds } = data;
 
             const project = new ProjectEntity(name, description);
 
-            return await this.repository.create(project);
+            const savedProject = await this.repository.create(project);
+
+            return savedProject;
         }, `Erro ao criar projeto`);
     }
 

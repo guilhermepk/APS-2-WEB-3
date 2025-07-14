@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class CreateProjectDto {
     @IsNotEmpty({ message: `'name' não pode estar vazio` })
@@ -9,4 +9,9 @@ export class CreateProjectDto {
     @IsOptional()
     @IsString({ message: `'description' deve ser uma string` })
     description?: string;
+
+    @IsOptional()
+    @IsArray()
+    @IsNumber(undefined, { each: true })
+    userIds?: number[];
 }

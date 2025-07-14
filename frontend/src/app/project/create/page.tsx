@@ -1,11 +1,23 @@
 'use client'
 
 import createProject from "@/apis/backend/projects/create-project";
-import { FormEvent, useState } from "react";
+import findAllUsers from "@/apis/backend/users/find-all-users";
+import CustomSelect, { Option } from "@/components/CustomSelect";
+import { FormEvent, useEffect, useState } from "react";
 
 export default function CreateProjectPage() {
     const [name, setName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
+    const [selected, setSelected] = useState<Option<number>[] | Option<number>>([]);
+    const [users, setUsers] = useState<{ id: number, name: string }[]>([]);
+
+    useEffect(() => {
+        async function getUsers() {
+            setUsers(await findAllUsers());
+        }
+
+        getUsers();
+    }, []);
 
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -30,7 +42,7 @@ export default function CreateProjectPage() {
                         value={name}
                         onChange={(event) => setName(event.target.value)}
                     />
-                    <p className="text-sm text-gray-500">Máximo de 100 caracteres</p>
+                    <p className="text-sm opacity-50">Máximo de 100 caracteres</p>
                 </div>
 
                 <div>
@@ -44,6 +56,14 @@ export default function CreateProjectPage() {
                     />
                 </div>
 
+                <CustomSelect
+                    options={users.map(user => ({ label: user.name, value: user.id }))}
+                    value={selected}
+                    onChange={(newValue) => setSelected(newValue)}
+                    multiSelect
+                />
+
+
                 <button
                     type="submit"
                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition cursor-pointer"
@@ -51,6 +71,6 @@ export default function CreateProjectPage() {
                     Criar projeto
                 </button>
             </form>
-        </div>
+        </div >
     );
 }

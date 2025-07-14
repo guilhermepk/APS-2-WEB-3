@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { UsersTypeOrmRepository } from "./user.repository";
 import { UserEntity } from "./models/entities/user.entity";
 import { tryCatch } from "src/common/functions/try-catch.function";
@@ -18,6 +18,16 @@ export class UsersService {
 
             return await this.repository.create(user);
         }, `Erro ao criar usuário`);
+    }
+
+    async findById(id: number): Promise<UserEntity> {
+        return await tryCatch(async () => {
+            const foundUser = await this.repository.findById(id);
+
+            if (!foundUser) throw new NotFoundException(`Nenhum usuário encontrado com ID ${id}`);
+
+            return foundUser;
+        }, `Erro ao buscar usuário ${id}`);
     }
 
     async findAll(): Promise<Array<UserEntity>> {

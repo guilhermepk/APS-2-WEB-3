@@ -16,5 +16,8 @@ import { UsersTypeOrmRepository } from "./user.repository";
     controllers: [
         UsersController
     ],
+    exports: [
+        UsersService
+    ]
 })
 export class UsersModule { }
