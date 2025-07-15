@@ -5,8 +5,9 @@ import { ProjectEntity } from "./models/entities/project.entity";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";
 import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
 import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
-import { DeleteResult, UpdateResult } from "typeorm";
+import { DeleteResult, EntityManager, UpdateResult } from "typeorm";
 import { UsersService } from "src/users/users.service";
+import { UsersProjectsService } from "src/users-projetcs/users-projects.service";
 
 describe('ProjectsService', () => {
     let service: ProjectsService;
@@ -19,8 +20,16 @@ describe('ProjectsService', () => {
         delete: jest.fn()
     }
 
-    const userService = {
+    const usersService = {
         findById: jest.fn()
+    }
+
+    const usersProjectsService = {
+        create: jest.fn()
+    }
+
+    const entityManager = {
+        transaction: jest.fn()
     }
 
     beforeEach(async () => {
@@ -28,7 +37,9 @@ describe('ProjectsService', () => {
             providers: [
                 ProjectsService,
                 { provide: ProjectsTypeOrmRepository, useValue: mockRepository },
-                { provide: UsersService, useValue: UsersService }
+                { provide: UsersService, useValue: usersService },
+                { provide: UsersProjectsService, useValue: usersProjectsService },
+                { provide: EntityManager, useValue: entityManager },
             ]
         }).compile();
 
@@ -39,25 +50,53 @@ describe('ProjectsService', () => {
 
     describe('create', () => {
         it('deveria criar um projeto e retornar a entidade', async () => {
-            const dto: CreateProjectDto = { name: 'Projeto teste', description: 'Descrição' };
-            const projectEntity: ProjectEntity = {
+            const dto: CreateProjectDto = { name: 'Projeto teste', description: 'Descrição', userIds: [1, 2, 3] };
+            const projectInDatabase = {
                 id: 1,
-                name: dto.name,
-                description: dto.description,
-                usersProjects: [],
-                tasks: []
+                name: 'Projeto teste',
+                description: 'Descrição'
             };
 
-            mockRepository.create.mockResolvedValue(projectEntity);
+            const transactionManager = {
+                save: jest.fn()
+            }
+
+            entityManager.transaction.mockImplementation(async (cb: (manager: any) => Promise<any> | any) => {
+                return await cb(transactionManager);
+            });
+
+            mockRepository.create.mockResolvedValue(projectInDatabase);
+
+            usersService.findById
+                .mockResolvedValueOnce({ id: 1, name: 'Usuário 1' })
+                .mockResolvedValueOnce({ id: 2, name: 'Usuário 2' })
+                .mockResolvedValueOnce({ id: 3, name: 'Usuário 3' });
+
+            usersProjectsService.create
+                .mockReturnValueOnce({ id: 1 })
+                .mockReturnValueOnce({ id: 2 })
+                .mockReturnValueOnce({ id: 3 });
 
             const result = await service.create(dto);
 
-            expect(mockRepository.create).toHaveBeenCalledWith(expect.any(ProjectEntity));
-            expect(result).toEqual(projectEntity);
+            expect(entityManager.transaction).toHaveBeenCalledTimes(1);
+
+            expect(usersService.findById).toHaveBeenNthCalledWith(1, 1);
+            expect(usersService.findById).toHaveBeenNthCalledWith(2, 2);
+            expect(usersService.findById).toHaveBeenNthCalledWith(3, 3);
+            expect(usersService.findById).toHaveBeenCalledTimes(3);
+
+            expect(usersProjectsService.create).toHaveBeenNthCalledWith(1, { id: 1, name: 'Usuário 1' }, { id: 1, name: 'Projeto teste', description: 'Descrição' }, transactionManager);
+            expect(usersProjectsService.create).toHaveBeenNthCalledWith(2, { id: 2, name: 'Usuário 2' }, { id: 1, name: 'Projeto teste', description: 'Descrição' }, transactionManager);
+            expect(usersProjectsService.create).toHaveBeenNthCalledWith(3, { id: 3, name: 'Usuário 3' }, { id: 1, name: 'Projeto teste', description: 'Descrição' }, transactionManager);
+            expect(usersProjectsService.create).toHaveBeenCalledTimes(3);
+
+            expect(mockRepository.create).toHaveBeenCalledWith(expect.any(ProjectEntity), transactionManager);
+            expect(result).toEqual(projectInDatabase);
         });
 
         it('deveria lançar um InternalServerErrorException personalizado quando o repositório falhasse', async () => {
-            const dto: CreateProjectDto = { name: 'Projeto teste', description: 'Descrição' };
+            const dto: CreateProjectDto = { name: 'Projeto teste', description: 'Descrição', userIds: [1] };
             mockRepository.create.mockRejectedValue(new Error('DB error'));
 
             try {
