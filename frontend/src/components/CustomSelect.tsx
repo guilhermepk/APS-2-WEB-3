@@ -84,8 +84,8 @@ export default function CustomSelect<T>({
                             key={String(option.value)}
                             onClick={() => handleSelect(option)}
                             className={`px-4 py-2 cursor-pointer ${isSelected(option)
-                                    ? 'bg-[var(--foreground)] text-[var(--background)]'
-                                    : 'hover:bg-[var(--foreground)] hover:text-[var(--background)]'
+                                ? 'bg-[var(--foreground)] text-[var(--background)]'
+                                : 'hover:bg-[var(--foreground)] hover:text-[var(--background)]'
                                 }`}
                         >
                             {option.label}

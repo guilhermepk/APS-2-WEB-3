@@ -2,7 +2,7 @@
 
 import createProject from "@/apis/backend/projects/create-project";
 import findAllUsers from "@/apis/backend/users/find-all-users";
-import CustomSelect, { Option } from "@/components/a";
+import CustomSelect, { Option } from "@/components/CustomSelect";
 import { FormEvent, useEffect, useState } from "react";
 
 export default function CreateProjectPage() {
