@@ -10,6 +10,7 @@ interface CustomSelectProps<T = any> {
     value: Option<T> | Option<T>[];
     onChange: (newValue: Option<T> | Option<T>[]) => void;
     multiSelect?: boolean;
+    required?: boolean;
 }
 
 export default function CustomSelect<T>({
@@ -17,6 +18,7 @@ export default function CustomSelect<T>({
     onChange,
     value,
     multiSelect = false,
+    required = false,
 }: CustomSelectProps<T>) {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
@@ -45,14 +47,14 @@ export default function CustomSelect<T>({
             if (!Array.isArray(value)) return;
 
             const alreadySelected = value.find(v => v.value === option.value);
-            let newValue;
-            if (alreadySelected) {
-                newValue = value.filter(v => v.value !== option.value);
-            } else {
-                newValue = [...value, option];
-            }
+            let newValue = alreadySelected
+                ? value.filter(v => v.value !== option.value)
+                : [...value, option];
+
+            if (required && newValue.length === 0) return; // não deixa limpar tudo se required
             onChange(newValue);
         } else {
+            if (required && (!option || option.value === null || option.value === undefined)) return; // bloqueia se required e opção inválida
             onChange(option);
             setOpen(false);
         }
@@ -67,31 +69,41 @@ export default function CustomSelect<T>({
         return 'Selecione...';
     };
 
+    const isError = required && (
+        (!value) ||
+        (multiSelect && Array.isArray(value) && value.length === 0)
+    );
+
     return (
         <div ref={ref} className="relative w-64">
             <button
-                type='button'
-                className="w-full border rounded px-4 py-2 text-left focus:outline-none cursor-pointer"
+                type="button"
+                className={`w-full border rounded px-4 py-2 text-left focus:outline-none cursor-pointer
+                    ${isError ? 'border-red-500' : ''}`}
                 onClick={() => setOpen(!open)}
             >
                 {getDisplayValue()}
             </button>
 
             {open && (
-                <ul className="absolute z-10 mt-1 w-full border rounded max-h-60 bg-[var(--background)]">
+                <ul className="absolute z-10 mt-1 w-full border rounded max-h-60 bg-[var(--background)] overflow-auto">
                     {options.map(option => (
                         <li
                             key={String(option.value)}
                             onClick={() => handleSelect(option)}
                             className={`px-4 py-2 cursor-pointer ${isSelected(option)
-                                ? 'bg-[var(--foreground)] text-[var(--background)]'
-                                : 'hover:bg-[var(--foreground)] hover:text-[var(--background)]'
+                                    ? 'bg-[var(--foreground)] text-[var(--background)]'
+                                    : 'hover:bg-[var(--foreground)] hover:text-[var(--background)]'
                                 }`}
                         >
                             {option.label}
                         </li>
                     ))}
                 </ul>
+            )}
+
+            {isError && (
+                <p className="text-red-500 text-sm mt-1">Este campo é obrigatório.</p>
             )}
         </div>
     );

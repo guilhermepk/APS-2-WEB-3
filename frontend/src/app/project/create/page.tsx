@@ -78,6 +78,7 @@ export default function CreateProjectPage() {
                     value={selectedUsers}
                     onChange={(newValue) => setSelectedUsers(newValue)}
                     multiSelect
+                    required
                 />
 
                 <button
