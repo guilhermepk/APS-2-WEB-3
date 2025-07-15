@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { UsersTypeOrmRepository } from "./user.repository";
+import { UsersTypeOrmRepository } from "./repositories/user.repository";
 import { UserEntity } from "./models/entities/user.entity";
 import { tryCatch } from "src/common/functions/try-catch.function";
 import { CreateUserDto } from "./models/dtos/create-user.dto";

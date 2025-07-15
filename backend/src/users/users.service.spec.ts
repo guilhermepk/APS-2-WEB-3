@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { UsersService } from "./users.service";
-import { UsersTypeOrmRepository } from "./user.repository";
+import { UsersTypeOrmRepository } from "./repositories/user.repository";
 import { NotFoundException } from "@nestjs/common";
 
 describe('UsersService', () => {
