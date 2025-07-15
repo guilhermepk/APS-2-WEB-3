@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { UsersProjectsService } from "./users-projects.service";
-import { UsersProjectsTypeOrmRepository } from "./users-projects.repository";
+import { UsersProjectsTypeOrmRepository } from "./repositories/users-projects.repository";
 import { UserEntity } from "src/users/models/entities/user.entity";
 import { ProjectEntity } from "src/projects/models/entities/project.entity";
 

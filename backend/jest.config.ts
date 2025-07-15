@@ -7,7 +7,6 @@ export default {
     coveragePathIgnorePatterns: [
         "/node_modules/",
         "/dist/",
-        "/src/.*/entities/.*\\.ts$",
-        "/src/.*\\.repository\\.ts$",
+        "/src/.*/entities/.*\\.ts$"
     ]
 };
