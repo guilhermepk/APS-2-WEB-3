@@ -13,7 +13,8 @@ describe('TasksService', () => {
         create: jest.fn(),
         findById: jest.fn(),
         findAll: jest.fn(),
-        update: jest.fn()
+        update: jest.fn(),
+        delete: jest.fn()
     }
 
     const projectService = {
@@ -250,6 +251,67 @@ describe('TasksService', () => {
                 expect(error).toBeInstanceOf(InternalServerErrorException);
                 expect(error.message).toEqual('Múltiplos registros afetados (2 registros). Esperado: apenas 1.');
             }
+        });
+    });
+
+    describe('delete', () => {
+        it('deveria deletar uma tarefa', async () => {
+            const taskInDatabase = { id: 1, description: 'Tarefa 1', completed: true };
+
+            mockRepository.findById.mockResolvedValue(taskInDatabase);
+            mockRepository.delete.mockResolvedValue({ affected: 1 });
+
+            const result = await service.delete(1);
+
+            expect(mockRepository.findById).toHaveBeenCalledWith(1);
+            expect(mockRepository.findById).toHaveBeenCalledTimes(1);
+
+            expect(mockRepository.delete).toHaveBeenCalledWith(taskInDatabase);
+            expect(mockRepository.delete).toHaveBeenCalledTimes(1);
+
+            expect(result).toEqual({ message: 'Tarefa deletada com sucesso' });
+        });
+
+        it('deveria estourar UnprocessableEntityException', async () => {
+            const taskInDatabase = { id: 1, description: 'Tarefa 1', completed: true };
+
+            mockRepository.findById.mockResolvedValue(taskInDatabase);
+            mockRepository.delete.mockResolvedValue({ affected: 0 });
+
+            try {
+                await service.delete(1);
+                fail('Deveria ter estourado UnprocessableEntityException');
+            } catch (error) {
+                expect(error).toBeInstanceOf(UnprocessableEntityException);
+                expect(error.message).toEqual('Não foi possível deletar a tarefa');
+            }
+
+            expect(mockRepository.findById).toHaveBeenCalledWith(1);
+            expect(mockRepository.findById).toHaveBeenCalledTimes(1);
+
+            expect(mockRepository.delete).toHaveBeenCalledWith(taskInDatabase);
+            expect(mockRepository.delete).toHaveBeenCalledTimes(1);
+        });
+
+        it('deveria estourar um InternalServerErrorException personalizado', async () => {
+            const taskInDatabase = { id: 1, description: 'Tarefa 1', completed: true };
+
+            mockRepository.findById.mockResolvedValue(taskInDatabase);
+            mockRepository.delete.mockResolvedValue({ affected: 2 });
+
+            try {
+                await service.delete(1);
+                fail('Deveria ter estourado um InternalServerErrorException personalizado');
+            } catch (error) {
+                expect(error).toBeInstanceOf(InternalServerErrorException);
+                expect(error.message).toEqual(`Múltiplos registros afetados (2 registros). Esperado: apenas 1`);
+            }
+
+            expect(mockRepository.findById).toHaveBeenCalledWith(1);
+            expect(mockRepository.findById).toHaveBeenCalledTimes(1);
+
+            expect(mockRepository.delete).toHaveBeenCalledWith(taskInDatabase);
+            expect(mockRepository.delete).toHaveBeenCalledTimes(1);
         });
     });
 });

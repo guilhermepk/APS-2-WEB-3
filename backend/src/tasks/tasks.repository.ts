@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { TaskEntity } from "./models/entities/task.entity";
-import { Repository, UpdateResult } from "typeorm";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
 
 @Injectable()
 export class TasksTypeOrmRepository {
@@ -32,5 +32,9 @@ export class TasksTypeOrmRepository {
 
     async update(newData: TaskEntity): Promise<UpdateResult> {
         return await this.repository.update(newData.id, newData);
+    }
+
+    async delete(task: TaskEntity): Promise<DeleteResult> {
+        return await this.repository.delete(task.id);
     }
 }

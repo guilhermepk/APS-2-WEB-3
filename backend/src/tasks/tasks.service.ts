@@ -64,4 +64,16 @@ export class TasksService {
             return { message: 'Tarefa atualizada com sucesso' };
         }, `Erro ao atualizar tarefa ${id}`);
     }
+
+    async delete(id: number): Promise<{ message: 'Tarefa deletada com sucesso' }> {
+        return await tryCatch(async () => {
+            const foundTask = await this.findById(id);
+
+            const result = await this.repository.delete(foundTask);
+            if (result.affected < 1) throw new UnprocessableEntityException('Não foi possível deletar a tarefa');
+            if (result.affected > 1) throw new InternalServerErrorException(`Múltiplos registros afetados (${result.affected} registros). Esperado: apenas 1`);
+
+            return { message: 'Tarefa deletada com sucesso' }
+        }, `Erro ao deletar projeto ${id}`);
+    }
 }
