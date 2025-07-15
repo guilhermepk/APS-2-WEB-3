@@ -51,6 +51,22 @@ describe('ProjectsTypeOrmRepository', () => {
 
             expect(result).toEqual(projectInDatabase);
         });
+
+        it('deveria criar um projeto no banco de dados com o entityManager da transaction', async () => {
+            const transactionManager = { save: jest.fn() } as any;
+
+            const projectInDatabase = { id: 1, name: 'Projeto 1', description: 'Descrição 1' };
+            transactionManager.save.mockResolvedValue(projectInDatabase);
+
+            const project = new ProjectEntity('Projeto 1', 'Descrição 1');
+
+            const result = await customRepository.create(project, transactionManager);
+
+            expect(transactionManager.save).toHaveBeenCalledWith(project);
+            expect(transactionManager.save).toHaveBeenCalledTimes(1);
+
+            expect(result).toEqual(projectInDatabase);
+        });
     });
 
     describe('findById', () => {
