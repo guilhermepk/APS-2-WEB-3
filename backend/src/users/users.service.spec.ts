@@ -8,7 +8,8 @@ describe('UsersService', () => {
 
     const mockRepository = {
         create: jest.fn(),
-        findById: jest.fn()
+        findById: jest.fn(),
+        findAll: jest.fn()
     }
 
     beforeEach(async () => {
@@ -66,6 +67,37 @@ describe('UsersService', () => {
 
             expect(mockRepository.findById).toHaveBeenNthCalledWith(1, 1);
             expect(mockRepository.findById).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('findAll', () => {
+        it('deveria encontrar todos os usuários (3 usuários)', async () => {
+            const usersInDatabase = [
+                { id: 1, name: 'Usuário 1' },
+                { id: 2, name: 'Usuário 2' },
+                { id: 3, name: 'Usuário 3' }
+            ];
+
+            mockRepository.findAll.mockResolvedValue(usersInDatabase);
+
+            const result = await service.findAll();
+
+            expect(mockRepository.findAll).toHaveBeenCalledTimes(1);
+
+            expect(result).toEqual(usersInDatabase);
+        });
+
+        it('deveria estourar NotFoundException', async () => {
+            mockRepository.findAll.mockResolvedValue([]);
+
+            try {
+                await service.findAll();
+            } catch (error) {
+                expect(error).toBeInstanceOf(NotFoundException);
+                expect(error.message).toEqual('Nenhum usuário encontrado');
+            }
+
+            expect(mockRepository.findAll).toHaveBeenCalledTimes(1);
         });
     });
 });

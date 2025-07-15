@@ -32,7 +32,12 @@ export class UsersService {
 
     async findAll(): Promise<Array<UserEntity>> {
         return await tryCatch(async () => {
-            return await this.repository.findAll();
+            return await this.repository.findAll()
+                .then(response => {
+                    if (response?.length < 1) throw new NotFoundException('Nenhum usuário encontrado');
+
+                    return response;
+                });
         }, `Erro ao buscar todos os usuários`);
     }
 }
