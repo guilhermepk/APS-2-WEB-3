@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
-import { ProjectsTypeOrmRepository } from "./projects.repository";
+import { ProjectsTypeOrmRepository } from "./repositories/projects.repository";
 import { ProjectEntity } from "./models/entities/project.entity";
 import { tryCatch } from "src/common/functions/try-catch.function";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";

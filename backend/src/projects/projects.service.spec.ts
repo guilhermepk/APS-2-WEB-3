@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { ProjectsTypeOrmRepository } from "./projects.repository";
+import { ProjectsTypeOrmRepository } from "./repositories/projects.repository";
 import { ProjectsService } from "./projects.service";
 import { ProjectEntity } from "./models/entities/project.entity";
 import { CreateProjectDto } from "./models/dtos/create-project.dto";

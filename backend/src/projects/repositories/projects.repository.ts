@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, EntityManager, Repository, UpdateResult } from "typeorm";
-import { ProjectEntity } from "./models/entities/project.entity";
+import { ProjectEntity } from "../models/entities/project.entity";
 
 @Injectable()
 export class ProjectsTypeOrmRepository {

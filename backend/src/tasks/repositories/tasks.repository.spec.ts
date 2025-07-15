@@ -126,7 +126,7 @@ describe('TasksTypeOrmRepository', () => {
 
             const result = await customRepository.delete(task);
 
-            expect(mockRepository.delete).toHaveBeenCalledWith(1);
+            expect(mockRepository.delete).toHaveBeenCalledWith({ id: 1 });
             expect(mockRepository.delete).toHaveBeenCalledTimes(1);
 
             expect(result).toEqual(deleteResult);

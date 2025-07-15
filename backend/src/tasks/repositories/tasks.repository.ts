@@ -35,6 +35,6 @@ export class TasksTypeOrmRepository {
     }
 
     async delete(task: TaskEntity): Promise<DeleteResult> {
-        return await this.repository.delete(task.id);
+        return await this.repository.delete({ id: task.id });
     }
 }
