@@ -60,7 +60,7 @@ describe('UsersTypeOrmRepository', () => {
         });
     });
 
-    describe('findById', () => {
+    describe('findAll', () => {
         it('deveria encontrar todos os usuários (3 usuários) no banco de dados', async () => {
             const usersInDatabase = [
                 { id: 1, name: 'Usuário 1' },

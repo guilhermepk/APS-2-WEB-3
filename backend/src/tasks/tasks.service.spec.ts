@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { TasksService } from "./tasks.service";
-import { TasksTypeOrmRepository } from "./tasks.repository";
+import { TasksTypeOrmRepository } from "./repositories/tasks.repository";
 import { CreateTaskDto } from "./models/dtos/create-task.dto";
 import { ProjectsService } from "src/projects/projects.service";
 import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from "@nestjs/common";

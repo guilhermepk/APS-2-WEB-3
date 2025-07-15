@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
-import { TasksTypeOrmRepository } from "./tasks.repository";
+import { TasksTypeOrmRepository } from "./repositories/tasks.repository";
 import { tryCatch } from "src/common/functions/try-catch.function";
 import { TaskEntity } from "./models/entities/task.entity";
 import { CreateTaskDto } from "./models/dtos/create-task.dto";
