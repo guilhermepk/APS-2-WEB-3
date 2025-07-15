@@ -3,12 +3,14 @@
 import createProject from "@/apis/backend/projects/create-project";
 import findAllUsers from "@/apis/backend/users/find-all-users";
 import CustomSelect, { Option } from "@/components/CustomSelect";
+import iziToast from "izitoast";
+import { redirect } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
 export default function CreateProjectPage() {
     const [name, setName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
-    const [selected, setSelected] = useState<Option<number>[] | Option<number>>([]);
+    const [selectedUsers, setSelectedUsers] = useState<Option<number>[] | Option<number>>([]);
     const [users, setUsers] = useState<{ id: number, name: string }[]>([]);
 
     useEffect(() => {
@@ -22,7 +24,22 @@ export default function CreateProjectPage() {
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        await createProject(name, description);
+        await createProject({
+            name,
+            description,
+            userIds: Array.isArray(selectedUsers)
+                ? selectedUsers.map(item => item.value)
+                : [selectedUsers.value]
+        });
+
+        iziToast.success({
+            title: 'Sucesso!',
+            message: 'Projeto criado.',
+            timeout: 1000 * 3,
+            position: "topRight"
+        });
+
+        redirect('/')
     }
 
     return (
@@ -58,11 +75,10 @@ export default function CreateProjectPage() {
 
                 <CustomSelect
                     options={users.map(user => ({ label: user.name, value: user.id }))}
-                    value={selected}
-                    onChange={(newValue) => setSelected(newValue)}
+                    value={selectedUsers}
+                    onChange={(newValue) => setSelectedUsers(newValue)}
                     multiSelect
                 />
-
 
                 <button
                     type="submit"
