@@ -1,12 +1,14 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { UsersService } from "./users.service";
 import { UsersTypeOrmRepository } from "./user.repository";
+import { NotFoundException } from "@nestjs/common";
 
 describe('UsersService', () => {
     let service: UsersService;
 
     const mockRepository = {
-        create: jest.fn()
+        create: jest.fn(),
+        findById: jest.fn()
     }
 
     beforeEach(async () => {
@@ -35,6 +37,35 @@ describe('UsersService', () => {
             expect(mockRepository.create).toHaveBeenCalledTimes(1);
 
             expect(result).toEqual(userInDatabase);
+        });
+    });
+
+    describe('findById', () => {
+        it('deveria encontrar um usuário', async () => {
+            const userInDatabase = { id: 1, name: 'Usuário 1' };
+            mockRepository.findById.mockResolvedValue(userInDatabase);
+
+            const result = await service.findById(1);
+
+            expect(mockRepository.findById).toHaveBeenNthCalledWith(1, 1);
+            expect(mockRepository.findById).toHaveBeenCalledTimes(1);
+
+            expect(result).toEqual(userInDatabase);
+        });
+
+        it('deveria estourar NotFoundException', async () => {
+            mockRepository.findById.mockResolvedValue(null);
+
+            try {
+                await service.findById(1);
+                fail('Deveria ter estourado NotFoundException');
+            } catch (error) {
+                expect(error).toBeInstanceOf(NotFoundException);
+                expect(error.message).toEqual('Nenhum usuário encontrado com ID 1');
+            }
+
+            expect(mockRepository.findById).toHaveBeenNthCalledWith(1, 1);
+            expect(mockRepository.findById).toHaveBeenCalledTimes(1);
         });
     });
 });
