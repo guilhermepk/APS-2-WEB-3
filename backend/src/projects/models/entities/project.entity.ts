@@ -4,7 +4,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'projects' })
 export class ProjectEntity {
-    constructor(name: string, description: string) {
+    constructor(name: string, description?: string) {
         this.name = name;
         this.description = description;
     }
@@ -18,7 +18,7 @@ export class ProjectEntity {
     name: string;
 
     @Column({ type: "varchar", nullable: true })
-    description: string;
+    description?: string;
 
     // --{ RELATIONS }--
 
