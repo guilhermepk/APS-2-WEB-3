@@ -1,55 +1,65 @@
 'use client'
 
-import updateTask from '@/apis/backend/tasks/update-task';
-import { useState, useRef, useEffect, KeyboardEvent } from 'react';
+import updateTask from '@/apis/backend/tasks/update-task'
+import { useState, useRef, useEffect, KeyboardEvent } from 'react'
 
 interface Task {
-    id: number;
-    description: string;
-    completed: boolean;
+    id: number
+    description: string
+    completed: boolean
 }
 
 interface TaskCardProps {
-    task: Task;
+    task: Task
 }
 
 export default function TaskCard({ task }: TaskCardProps) {
-    const [isEditing, setIsEditing] = useState(false);
-    const [desc, setDesc] = useState(task.description);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const [isEditing, setIsEditing] = useState(false)
+    const [desc, setDesc] = useState(task.description)
+    const [completed, setCompleted] = useState(task.completed)
+    const inputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         if (isEditing) {
-            inputRef.current?.focus();
-            inputRef.current?.select();
+            inputRef.current?.focus()
+            inputRef.current?.select()
         }
-    }, [isEditing]);
+    }, [isEditing])
 
     function handleDoubleClick() {
-        if (!task.completed) setIsEditing(true);
+        if (!completed) setIsEditing(true)
     }
 
     async function handleBlur() {
-        setIsEditing(false);
+        setIsEditing(false)
         if (desc !== task.description) {
-            await updateTask(task.id, { description: desc.trim() });
+            await updateTask(task.id, { description: desc.trim() })
         }
+    }
+
+    async function toggleCompleted() {
+        const newCompleted = !completed
+        setCompleted(newCompleted)
+
+        await updateTask(task.id, { completed: !completed });
     }
 
     function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
         if (e.key === 'Enter') {
-            inputRef.current?.blur();
+            inputRef.current?.blur()
         } else if (e.key === 'Escape') {
-            setDesc(task.description);
-            setIsEditing(false);
+            setDesc(task.description)
+            setIsEditing(false)
         }
     }
 
     return (
         <div className="flex gap-2 items-center">
             <img
-                src={task.completed ? '/checkbox_signed.svg' : '/checkbox.svg'}
+                src={completed ? '/checkbox_signed.svg' : '/checkbox.svg'}
                 alt=""
+                className="cursor-pointer"
+                onClick={toggleCompleted}
             />
             {isEditing ? (
                 <input
@@ -63,11 +73,11 @@ export default function TaskCard({ task }: TaskCardProps) {
             ) : (
                 <p
                     onDoubleClick={handleDoubleClick}
-                    className={`${task.completed ? 'opacity-50' : 'opacity-100'}`}
+                    className={`${completed ? 'opacity-50' : 'opacity-100'}`}
                 >
-                    {task.completed ? <s>{desc}</s> : desc}
+                    {completed ? <s>{desc}</s> : desc}
                 </p>
             )}
         </div>
-    );
+    )
 }
