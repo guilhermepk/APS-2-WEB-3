@@ -21,6 +21,6 @@ export class TaskEntity {
     // --{ RELATIONS }--
 
     @JoinColumn({ name: 'fk_project' })
-    @ManyToOne(() => ProjectEntity, project => project.tasks, { nullable: false })
+    @ManyToOne(() => ProjectEntity, project => project.tasks, { nullable: false, onDelete: "CASCADE" })
     project: ProjectEntity;
 }

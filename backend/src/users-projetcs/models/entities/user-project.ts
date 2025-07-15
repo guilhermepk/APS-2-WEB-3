@@ -15,10 +15,10 @@ export class UserProjectEntity {
     // --{ RELATIONS }--
 
     @JoinColumn({ name: 'fk_project' })
-    @ManyToOne(() => ProjectEntity, project => project.id, { nullable: false })
+    @ManyToOne(() => ProjectEntity, project => project.usersProjects, { nullable: false, onDelete: "CASCADE" })
     project: ProjectEntity;
 
     @JoinColumn({ name: 'fk_user' })
-    @ManyToOne(() => UserEntity, user => user.id, { nullable: false })
+    @ManyToOne(() => UserEntity, user => user.usersProjects, { nullable: false })
     user: UserEntity;
 }

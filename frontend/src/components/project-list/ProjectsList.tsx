@@ -1,7 +1,7 @@
 'use client'
 
 import { FindAllProjectsResponseDto } from "@/apis/backend/projects/models/dtos/find-all-projects-response.dto";
-import { use } from "react";
+import { use, useState } from "react";
 import ProjectCard from "./ProjectCard";
 
 interface ProjectsListProps {
@@ -11,7 +11,12 @@ interface ProjectsListProps {
 export default function ProjectsList({
     projects
 }: ProjectsListProps) {
-    const allProjects = use(projects);
+    const resolvedProjects = use(projects);
+    const [allProjects, setAllProjects] = useState(resolvedProjects);
+
+    function onProjectDelete(projectId: number) {
+        setAllProjects(prev => prev.filter(project => project.id !== projectId));
+    }
 
     return (
         <div
@@ -21,7 +26,7 @@ export default function ProjectsList({
             `}
         >
             {allProjects.map((project, index) => (
-                <ProjectCard key={index} project={project} />
+                <ProjectCard key={index} project={project} onDelete={onProjectDelete} />
             ))}
         </div>
     );
