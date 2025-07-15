@@ -1,5 +1,5 @@
 import { TaskEntity } from "src/tasks/models/entities/task.entity";
-import { UserProjectEntity } from "src/users-projetcs/models/entities/user-project";
+import { UserProjectEntity } from "src/users-projects/models/entities/user-project";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'projects' })

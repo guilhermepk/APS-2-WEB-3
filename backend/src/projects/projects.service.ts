@@ -7,7 +7,7 @@ import { UpdateProjectDto } from "./models/dtos/update-project.dto";
 import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-response.dto";
 import { FindProjectByIdResponseDto } from "./models/dtos/find-project-by-id-response.dto";
 import { UsersService } from "src/users/users.service";
-import { UsersProjectsService } from "src/users-projetcs/users-projects.service";
+import { UsersProjectsService } from "src/users-projects/users-projects.service";
 import { EntityManager } from "typeorm";
 
 @Injectable()

@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectsModule } from './projects/projects.module';
 import { UsersModule } from './users/users.module';
 import { TasksModule } from './tasks/tasks.module';
-import { UsersProjectsModule } from './users-projetcs/users-projects.module';
+import { UsersProjectsModule } from './users-projects/users-projects.module';
 
 @Module({
   imports: [

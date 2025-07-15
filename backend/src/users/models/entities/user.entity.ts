@@ -1,4 +1,4 @@
-import { UserProjectEntity } from "src/users-projetcs/models/entities/user-project";
+import { UserProjectEntity } from "src/users-projects/models/entities/user-project";
 import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'users' })

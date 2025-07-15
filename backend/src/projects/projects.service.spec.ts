@@ -7,7 +7,7 @@ import { FindAllProjectsResponseDto } from "./models/dtos/find-all-projects-resp
 import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 import { DeleteResult, EntityManager, UpdateResult } from "typeorm";
 import { UsersService } from "src/users/users.service";
-import { UsersProjectsService } from "src/users-projetcs/users-projects.service";
+import { UsersProjectsService } from "src/users-projects/users-projects.service";
 
 describe('ProjectsService', () => {
     let service: ProjectsService;
