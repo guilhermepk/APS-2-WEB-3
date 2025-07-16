@@ -1,3 +1,5 @@
+'use client'
+
 import deleteProject from "@/apis/backend/projects/delete-project";
 import iziToast, { IziToast } from "izitoast";
 import Link from "next/link";
