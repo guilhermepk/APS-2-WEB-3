@@ -25,9 +25,9 @@ export default function ProjectsList({
                 flex flex-wrap items-stretch justify-center gap-[50px]
             `}
         >
-            {allProjects.map((project, index) => (
+            {allProjects?.length > 0 ? allProjects.map((project, index) => (
                 <ProjectCard key={index} project={project} onDelete={onProjectDelete} />
-            ))}
+            )) : (<p><i className="opacity-50"> Nenhum projeto encontrado </i></p>)}
         </div>
     );
 }
