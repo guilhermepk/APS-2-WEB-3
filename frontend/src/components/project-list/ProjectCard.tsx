@@ -1,4 +1,5 @@
 import deleteProject from "@/apis/backend/projects/delete-project";
+import iziToast, { IziToast } from "izitoast";
 import Link from "next/link";
 
 interface ProjectCardProps {
@@ -16,10 +17,21 @@ interface ProjectCardProps {
 export default function ProjectCard({
     project, onDelete
 }: ProjectCardProps) {
-    async function handleDelete(event: { stopPropagation: () => void }) {
+    async function handleDeletionConfirmed(instance: IziToast, toast: HTMLDivElement) {
+        await deleteProject(project.id);
+        onDelete(project.id);
+        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        iziToast.success({
+            title: 'Sucesso!',
+            message: `Projeto deletado`,
+            position: "topRight"
+        });
+    }
+
+    async function handleDeletetionTrying(event: { stopPropagation: () => void }) {
         event.stopPropagation();
 
-        const iziToast = (await import('izitoast')).default;
+        // const iziToast = (await import('izitoast')).default;
 
         iziToast.question({
             title: `Tem certeza?`,
@@ -31,9 +43,7 @@ export default function ProjectCard({
             overlayClose: true,
             buttons: [
                 ['<button>Sim</button>', async (instance, toast, button, event, inputs) => {
-                    await deleteProject(project.id);
-                    onDelete(project.id);
-                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    await handleDeletionConfirmed(instance, toast);
                 }, false],
                 ['<button>Não</button>', (instance, toast, button, event, inputs) => {
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
@@ -51,7 +61,7 @@ export default function ProjectCard({
                 src={'/red_trash.svg'}
                 alt="Lata de lixo vermelha"
                 className="absolute right-4 top-4 cursor-pointer hover:scale-150 transition-transform duration-200"
-                onClick={handleDelete}
+                onClick={handleDeletetionTrying}
             />
 
             <Link href={`/project/${project.id}`}>
