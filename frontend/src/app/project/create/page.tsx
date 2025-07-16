@@ -65,13 +65,18 @@ export default function CreateProjectPage() {
                     />
                 </div>
 
-                <CustomSelect
-                    options={users.map(user => ({ label: user.name, value: user.id }))}
-                    value={selectedUsers}
-                    onChange={(newValue) => setSelectedUsers(newValue)}
-                    multiSelect
-                    required
-                />
+                <div>
+                    <label className="block font-medium mb-1">Usuários *</label>
+                    <CustomSelect
+                        options={users.map(user => ({ label: user.name, value: user.id }))}
+                        value={selectedUsers}
+                        onChange={(newValue) => setSelectedUsers(newValue)}
+                        multiSelect
+                        required
+                        placeholder="Selecione os usuários do projeto"
+                        messageWhenNoOptions="Nenhum usuário encontrado (cadastre previamente)"
+                    />
+                </div>
 
                 <button
                     type="submit"

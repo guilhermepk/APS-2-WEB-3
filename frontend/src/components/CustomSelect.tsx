@@ -11,6 +11,8 @@ interface CustomSelectProps<T = any> {
     onChange: (newValue: Option<T> | Option<T>[]) => void;
     multiSelect?: boolean;
     required?: boolean;
+    messageWhenNoOptions?: string;
+    placeholder?: string
 }
 
 export default function CustomSelect<T>({
@@ -19,6 +21,8 @@ export default function CustomSelect<T>({
     value,
     multiSelect = false,
     required = false,
+    messageWhenNoOptions = 'Nenhuma opção disponível',
+    placeholder = 'Selecione...'
 }: CustomSelectProps<T>) {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
@@ -62,11 +66,11 @@ export default function CustomSelect<T>({
 
     const getDisplayValue = () => {
         if (multiSelect && Array.isArray(value)) {
-            return value.map(v => v.label).join(', ') || 'Selecione...';
+            return value.map(v => v.label).join(', ') || placeholder;
         } else if (!multiSelect && !Array.isArray(value)) {
-            return value?.label || 'Selecione...';
+            return value?.label || placeholder;
         }
-        return 'Selecione...';
+        return placeholder;
     };
 
     const isError = required && (
@@ -78,7 +82,7 @@ export default function CustomSelect<T>({
         <div ref={ref} className="relative w-64">
             <button
                 type="button"
-                className={`w-full border rounded px-4 py-2 text-left focus:outline-none cursor-pointer
+                className={`w-full border rounded px-4 py-2 text-center focus:outline-none cursor-pointer
                     ${isError ? 'border-red-500' : ''}`}
                 onClick={() => setOpen(!open)}
             >
@@ -86,20 +90,26 @@ export default function CustomSelect<T>({
             </button>
 
             {open && (
-                <ul className="absolute z-10 mt-1 w-full border rounded max-h-60 bg-[var(--background)] overflow-auto">
-                    {options.map(option => (
-                        <li
-                            key={String(option.value)}
-                            onClick={() => handleSelect(option)}
-                            className={`px-4 py-2 cursor-pointer ${isSelected(option)
+                <>{options?.length > 0 ? (
+                    <ul className="absolute z-10 mt-1 w-full border rounded max-h-60 bg-[var(--background)] overflow-auto">
+                        {options.map(option => (
+                            <li
+                                key={String(option.value)}
+                                onClick={() => handleSelect(option)}
+                                className={`px-4 py-2 cursor-pointer text-center ${isSelected(option)
                                     ? 'bg-[var(--foreground)] text-[var(--background)]'
                                     : 'hover:bg-[var(--foreground)] hover:text-[var(--background)]'
-                                }`}
-                        >
-                            {option.label}
-                        </li>
-                    ))}
-                </ul>
+                                    }`}
+                            >
+                                {option.label}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <div className="absolute z-10 mt-1 w-full border rounded max-h-60 bg-[var(--background)] overflow-auto">
+                        <p className='px-4 py-2 opacity-50 text-center'><i> {messageWhenNoOptions} </i></p>
+                    </div>
+                )}</>
             )}
 
             {isError && (
