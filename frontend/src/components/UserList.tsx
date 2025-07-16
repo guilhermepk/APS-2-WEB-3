@@ -16,7 +16,7 @@ export default function UserList({
 
     return (
         <div className="flex items-center justify-center flex-wrap gap-[25px]">
-            {loadedUsers?.length > 1 ? loadedUsers.map((user, index) => (
+            {loadedUsers?.length > 0 ? loadedUsers.map((user, index) => (
                 <p key={index} className="text-center py-1 px-2 rounded-[10px] border">
                     {user.name}
                 </p>
