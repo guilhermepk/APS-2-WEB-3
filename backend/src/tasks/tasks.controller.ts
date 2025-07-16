@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query } from "@nestjs/common";
 import { TasksService } from "./tasks.service";
 import { CreateTaskDto } from "./models/dtos/create-task.dto";
 import { UpdateTaskDto } from "./models/dtos/update-task.dto";
@@ -43,5 +43,12 @@ export class TasksController {
         @Body() body: UpdateTaskDto
     ) {
         return await this.service.update(id, body);
+    }
+
+    @Delete(':id')
+    async delete(
+        @Param('id', ParseIntPipe) id: number
+    ) {
+        return await this.service.delete(id);
     }
 }

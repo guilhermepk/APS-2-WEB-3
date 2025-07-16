@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import findProjectById from "@/apis/backend/projects/find-project-by-id";
 import { FindProjectByIdResponseDto } from "@/apis/backend/projects/models/dtos/find-project-by-id-response.dto";
-import TaskCard from "@/components/TaskCard";
+import TaskCard, { Task } from "@/components/TaskCard";
 import EditButton from "@/components/EditButton";
 import updateProject from "@/apis/backend/projects/update-project";
 
@@ -59,6 +59,19 @@ export default function ProjectPage() {
     async function handleDescriptionBlur() {
         setIsEditingDescription(false);
         await updateProject(numberId, { description });
+    }
+
+    function handleTaskDeletion(task: Task) {
+        setProject(prev => {
+            if (!prev) return null;
+
+            const newTasks = prev.tasks?.filter(projectTask => projectTask.id !== task.id);
+
+            return {
+                ...prev,
+                tasks: newTasks,
+            };
+        });
     }
 
     if (loading) return <p>Carregando...</p>;
@@ -136,8 +149,8 @@ export default function ProjectPage() {
 
             <div className="flex items-center justify-center flex-wrap gap-[25px]">
                 {project.tasks?.length > 0 ? (
-                    project.tasks.map((task, index) => (
-                        <TaskCard key={index} task={task} />
+                    project.tasks.map((task) => (
+                        <TaskCard key={task.id} task={task} onDelete={handleTaskDeletion} />
                     ))
                 ) : (
                     <p className="text-center opacity-50"><i>Nenhuma tarefa</i></p>

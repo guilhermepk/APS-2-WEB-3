@@ -1,7 +1,7 @@
 export type FindProjectByIdResponseDto = {
     id: number,
     name: string,
-    description: string | null,
+    description?: string,
     tasks: Array<{
         id: number,
         description: string,
