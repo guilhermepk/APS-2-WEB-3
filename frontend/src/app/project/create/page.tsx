@@ -21,7 +21,7 @@ export default function CreateProjectPage() {
         getUsers();
     }, []);
 
-    async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         await createProject({
@@ -44,7 +44,7 @@ export default function CreateProjectPage() {
 
     return (
         <div className="max-w-xl mx-auto">
-            <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 <h1 className="text-center text-2xl font-bold mb-6 my-[50px]">Criar um novo projeto</h1>
 
                 <div>
