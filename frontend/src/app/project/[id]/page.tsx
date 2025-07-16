@@ -7,6 +7,8 @@ import { FindProjectByIdResponseDto } from "@/apis/backend/projects/models/dtos/
 import TaskCard, { Task } from "@/components/TaskCard";
 import EditButton from "@/components/EditButton";
 import updateProject from "@/apis/backend/projects/update-project";
+import CreateTaskCard from "@/components/CreateTaskCard";
+import createTask from "@/apis/backend/tasks/create-task";
 
 export default function ProjectPage() {
     const { id } = useParams();
@@ -72,6 +74,30 @@ export default function ProjectPage() {
                 tasks: newTasks,
             };
         });
+    }
+
+    async function handleNewTask(description: string) {
+        if (project) {
+            const createdTask = await createTask({
+                projectId: project.id,
+                description: description,
+                completed: false
+            });
+
+            setProject(prev => {
+                if (!prev) return null;
+
+                const newTasks = [
+                    { id: createdTask.id, description: createdTask.description, completed: createdTask.completed },
+                    ...prev.tasks
+                ];
+
+                return {
+                    ...prev,
+                    tasks: newTasks
+                };
+            });
+        }
     }
 
     if (loading) return <p>Carregando...</p>;
@@ -148,6 +174,8 @@ export default function ProjectPage() {
             <h2 className="text-center mt-[100px] mb-[50px]">Tarefas deste projeto</h2>
 
             <div className="flex items-center justify-center flex-wrap gap-[25px]">
+                <CreateTaskCard onSave={handleNewTask} />
+
                 {project.tasks?.length > 0 ? (
                     project.tasks.map((task) => (
                         <TaskCard key={task.id} task={task} onDelete={handleTaskDeletion} />

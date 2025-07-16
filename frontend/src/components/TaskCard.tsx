@@ -67,7 +67,6 @@ export default function TaskCard({ task, onDelete }: TaskCardProps) {
         <div className="flex gap-2 items-center">
             <img
                 src={completed ? '/checkbox_signed.svg' : '/checkbox.svg'}
-                alt=""
                 className="cursor-pointer"
                 onClick={toggleCompleted}
             />
@@ -98,5 +97,5 @@ export default function TaskCard({ task, onDelete }: TaskCardProps) {
                 </p>
             )}
         </div>
-    )
+    );
 }
