@@ -15,9 +15,9 @@ export default function TaskList({
 
     return (
         <div className="flex items-center justify-center gap-[25px] flex-wrap">
-            {loadedTasks.map((task, index) => (
+            {loadedTasks?.length > 0 ? loadedTasks.map((task, index) => (
                 <TaskCard key={index} task={task} />
-            ))}
+            )) : (<p><i className="opacity-50"> Nenhuma tarefa encontrada </i></p>)}
         </div>
     );
 }

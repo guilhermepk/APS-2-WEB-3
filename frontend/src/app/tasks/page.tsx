@@ -1,3 +1,5 @@
+'use client'
+
 import findAllTasks from "@/apis/backend/tasks/find-all-tasks";
 // import CustomSelect from "@/components/CustomSelect";
 import TaskList from "@/components/TaskList";
