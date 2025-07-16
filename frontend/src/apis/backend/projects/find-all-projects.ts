@@ -1,4 +1,3 @@
-import iziToast from 'izitoast';
 import { backendApi } from '../axios-backend-api';
 import { FindAllProjectsResponseDto } from './models/dtos/find-all-projects-response.dto';
 
@@ -6,7 +5,8 @@ export default async function findAllProjects(): Promise<FindAllProjectsResponse
     return backendApi.get<FindAllProjectsResponseDto>(
         '/projects',
         {
-            customErrorInterceptor: (error: any) => {
+            customErrorInterceptor: async (error: any) => {
+                const iziToast = (await import("izitoast")).default;
                 if (error.response?.status === 404) {
                     return Promise.resolve({ data: [] });
                 } else {
