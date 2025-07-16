@@ -16,8 +16,8 @@ export default function Navbar() {
                 fixed top-0 left-0
                 w-[150px]
                 h-[100vh]
-                border-r border-white
-                bg-black
+                border-r border-[var(--foreground)]
+                bg-[var(--background)]
             `}
         >
             <div
