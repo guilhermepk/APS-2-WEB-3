@@ -3,6 +3,7 @@
 import createProject from "@/apis/backend/projects/create-project";
 import findAllUsers from "@/apis/backend/users/find-all-users";
 import CustomSelect, { Option } from "@/components/CustomSelect";
+import RequiredFormInputSign from "@/components/RequiredFormInputSign";
 import { redirect } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -40,7 +41,7 @@ export default function CreateProjectPage() {
                 <h1 className="text-center text-2xl font-bold mb-6 my-[50px]">Criar um novo projeto</h1>
 
                 <div>
-                    <label htmlFor="name" className="block font-medium mb-1">Nome do projeto *</label>
+                    <label htmlFor="name" className="block font-medium mb-1">Nome do projeto <RequiredFormInputSign /></label>
                     <input
                         type="text"
                         id="name"
@@ -66,7 +67,7 @@ export default function CreateProjectPage() {
                 </div>
 
                 <div>
-                    <label className="block font-medium mb-1">Usuários *</label>
+                    <label className="block font-medium mb-1">Usuários (pode selecionar vários) <RequiredFormInputSign /></label>
                     <CustomSelect
                         options={users.map(user => ({ label: user.name, value: user.id }))}
                         value={selectedUsers}

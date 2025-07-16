@@ -26,6 +26,7 @@ export default function CustomSelect<T>({
 }: CustomSelectProps<T>) {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+    const [selected, setSelected] = useState<boolean>(false);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -57,10 +58,12 @@ export default function CustomSelect<T>({
 
             if (required && newValue.length === 0) return; // não deixa limpar tudo se required
             onChange(newValue);
+            setSelected(!(newValue.length === 0));
         } else {
             if (required && (!option || option.value === null || option.value === undefined)) return; // bloqueia se required e opção inválida
             onChange(option);
             setOpen(false);
+            setSelected(!(option.value === null));
         }
     };
 
@@ -82,8 +85,16 @@ export default function CustomSelect<T>({
         <div ref={ref} className="relative w-64">
             <button
                 type="button"
-                className={`w-full border rounded px-4 py-2 text-center focus:outline-none cursor-pointer
-                    ${isError ? 'border-red-500' : ''}`}
+                className={`
+                    w-full
+                    border rounded
+                    px-4 py-2
+                    text-center
+                    focus:outline-none
+                    cursor-pointer
+                    ${isError ? 'border-red-500' : ''}
+                    ${selected ? '' : 'opacity-50'}
+                `}
                 onClick={() => setOpen(!open)}
             >
                 {getDisplayValue()}

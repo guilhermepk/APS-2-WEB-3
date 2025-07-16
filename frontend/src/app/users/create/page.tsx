@@ -1,6 +1,7 @@
 'use client'
 
 import createUser from "@/apis/backend/users/create-user";
+import RequiredFormInputSign from "@/components/RequiredFormInputSign";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 
@@ -21,7 +22,7 @@ export default function CreateUserPage() {
                 <h1 className="text-center text-2xl font-bold mb-6 my-[50px]">Criar um novo usuário</h1>
 
                 <div>
-                    <label htmlFor="name" className="block font-medium mb-1">Nome do usuário *</label>
+                    <label htmlFor="name" className="block font-medium mb-1">Nome do usuário <RequiredFormInputSign /></label>
                     <input
                         type="text"
                         id="name"
