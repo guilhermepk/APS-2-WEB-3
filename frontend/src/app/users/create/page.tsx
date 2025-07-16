@@ -1,7 +1,6 @@
 'use client'
 
 import createUser from "@/apis/backend/users/create-user";
-import iziToast from "izitoast";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 
@@ -12,13 +11,6 @@ export default function CreateUserPage() {
         e.preventDefault();
 
         await createUser({ name });
-
-        iziToast.success({
-            title: 'Sucesso!',
-            message: 'Usuário criado.',
-            timeout: 1000 * 3,
-            position: "topRight"
-        });
 
         redirect('/users');
     }

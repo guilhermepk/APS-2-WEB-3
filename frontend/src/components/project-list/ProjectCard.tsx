@@ -23,11 +23,6 @@ export default function ProjectCard({
         await deleteProject(project.id);
         onDelete(project.id);
         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        iziToast.success({
-            title: 'Sucesso!',
-            message: `Projeto deletado`,
-            position: "topRight"
-        });
     }
 
     async function handleDeletetionTrying(event: { stopPropagation: () => void }) {

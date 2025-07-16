@@ -3,7 +3,6 @@
 import createProject from "@/apis/backend/projects/create-project";
 import findAllUsers from "@/apis/backend/users/find-all-users";
 import CustomSelect, { Option } from "@/components/CustomSelect";
-import iziToast from "izitoast";
 import { redirect } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -30,13 +29,6 @@ export default function CreateProjectPage() {
             userIds: Array.isArray(selectedUsers)
                 ? selectedUsers.map(item => item.value)
                 : [selectedUsers.value]
-        });
-
-        iziToast.success({
-            title: 'Sucesso!',
-            message: 'Projeto criado.',
-            timeout: 1000 * 3,
-            position: "topRight"
         });
 
         redirect('/')
