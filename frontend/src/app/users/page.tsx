@@ -1,18 +1,13 @@
 'use client';
 
 import findAllUsers from "@/apis/backend/users/find-all-users";
-import { FindAllUsersResponseDto } from "@/apis/backend/users/models/dtos/find-all-users-response.dto";
 import AddButton from "@/components/AddButton";
 import UserList from "@/components/UserList";
 import { redirect } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 
 export default function UsersPage() {
-    const [users, setUsers] = useState<Promise<FindAllUsersResponseDto> | null>(null);
-
-    useEffect(() => {
-        setUsers(findAllUsers());
-    }, []);
+    const users = findAllUsers();
 
     return (
         <div className="flex items-center justify-center flex-col">
@@ -21,9 +16,7 @@ export default function UsersPage() {
             <AddButton className="mb-16" onClick={() => redirect('users/create')} text="Novo usuário" />
 
             <Suspense fallback={<p>Carregando...</p>}>
-                {users && (
-                    <UserList users={users} />
-                )}
+                <UserList users={users} />
             </Suspense>
         </div>
     );

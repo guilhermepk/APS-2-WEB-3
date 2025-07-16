@@ -1,4 +1,4 @@
-'use-client'
+'use client'
 
 import { FindAllTasksResponseDto } from "@/apis/backend/tasks/models/dtos/find-all-tasks-response.dto"
 import { use } from "react";
