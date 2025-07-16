@@ -14,7 +14,7 @@ export default function TaskList({
     const loadedTasks = use(tasks);
 
     return (
-        <div className="flex items-center justify-center gap-[25px]">
+        <div className="flex items-center justify-center gap-[25px] flex-wrap">
             {loadedTasks.map((task, index) => (
                 <TaskCard key={index} task={task} />
             ))}
