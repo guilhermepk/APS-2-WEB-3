@@ -2,6 +2,7 @@
 
 import deleteTask from '@/apis/backend/tasks/delete-task'
 import updateTask from '@/apis/backend/tasks/update-task'
+import Image from 'next/image'
 import { useState, useRef, useEffect, KeyboardEvent } from 'react'
 
 export interface Task {
@@ -65,7 +66,8 @@ export default function TaskCard({ task, onDelete }: TaskCardProps) {
 
     return (
         <div className="flex gap-2 items-center">
-            <img
+            <Image
+                alt='checkbox'
                 src={completed ? '/checkbox_signed.svg' : '/checkbox.svg'}
                 className="cursor-pointer"
                 onClick={toggleCompleted}
@@ -81,7 +83,7 @@ export default function TaskCard({ task, onDelete }: TaskCardProps) {
                         className="border rounded px-1"
                     />
 
-                    <img
+                    <Image
                         src={'/red_trash.svg'}
                         alt="Lata de lixo vermelha"
                         className="cursor-pointer hover:scale-150 transition-transform duration-200"

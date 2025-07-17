@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useState, KeyboardEvent, useRef } from "react";
 
 interface CreateTaskCardProps {
@@ -32,7 +33,8 @@ export default function CreateTaskCard({
 
     return (
         <div className="flex gap-2 items-center">
-            <img
+            <Image
+                alt="checkbox"
                 src={'/checkbox.svg'}
                 className="cursor-pointer"
             />

@@ -52,7 +52,7 @@ export default function CustomSelect<T>({
             if (!Array.isArray(value)) return;
 
             const alreadySelected = value.find(v => v.value === option.value);
-            let newValue = alreadySelected
+            const newValue = alreadySelected
                 ? value.filter(v => v.value !== option.value)
                 : [...value, option];
 

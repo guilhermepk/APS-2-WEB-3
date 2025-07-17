@@ -5,13 +5,13 @@ import { use, useState } from "react";
 import ProjectCard from "./ProjectCard";
 
 interface ProjectsListProps {
-    projects: Promise<FindAllProjectsResponseDto>
+    projects: Promise<FindAllProjectsResponseDto> | FindAllProjectsResponseDto
 }
 
 export default function ProjectsList({
     projects
 }: ProjectsListProps) {
-    const resolvedProjects = use(projects);
+    const resolvedProjects = projects instanceof Promise ? use(projects) : projects;
     const [allProjects, setAllProjects] = useState(resolvedProjects);
 
     function onProjectDelete(projectId: number) {
