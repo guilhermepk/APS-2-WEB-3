@@ -1,6 +1,16 @@
 # Gerenciador de Projetos
 
-Sistema web simples de gerenciamento de projetos, desenvolvido como atividade avaliativa da disciplina de WEB 3. O desenvolvimento foi feito com NestJS para o Backend e Next.js para o Frontend. PostgreSQL foi escolhido como banco de dados para o projeto.
+Sistema web simples de gerenciamento de projetos, desenvolvido como atividade avaliativa da disciplina de WEB 3 do curso de Tecnologia em Análise e Desenvolvimento de Sistemas (TADS) do Instituto Federal do Paraná (IFPR).
+
+## Prints
+
+Veja [as prints do sistema](./docs/prints).
+
+## Tecnologias
+
+- Banco de dados PostgreSQL.
+- Backend desenvolvido com NestJS e TypeORM.
+- Frontend desenvolvido com Next.js, axios e iziToast.
 
 ## Instalação e execução
 
