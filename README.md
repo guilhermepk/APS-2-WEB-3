@@ -2,6 +2,8 @@
 
 Sistema web simples de gerenciamento de projetos, desenvolvido como atividade avaliativa da disciplina de WEB 3 do curso de Tecnologia em Análise e Desenvolvimento de Sistemas (TADS) do Instituto Federal do Paraná (IFPR).
 
+Veja o [Diagrama de Entidade e Relacionamento (DER)](./backend/docs/DER.drawio) para entender a estrutura do banco de dados.
+
 ## Prints
 
 Veja [as prints do sistema](./docs/prints).
